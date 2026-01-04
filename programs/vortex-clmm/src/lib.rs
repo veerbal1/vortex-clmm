@@ -6,6 +6,7 @@ pub mod manager;
 pub mod math;
 pub mod state;
 pub mod util;
+pub mod constants;
 
 declare_id!("69kFA3bXWxaGLxz9iiMenWpE32t1hoJb8WzdvVbTzLN2");
 
