@@ -3,7 +3,7 @@
 ## Current Position
 - **Mode**: 🔨 BUILD MODE
 - **Learning Status**: COMPLETE (All 23 rings, 111 concepts)
-- **Build Status**: Ring 4 of 200 — IN PROGRESS
+- **Build Status**: Ring 5 of 200 — IN PROGRESS
 
 ## Build Reference
 - **Roadmap**: `/z_cache/learning/build_roadmap.md`
@@ -321,8 +321,8 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - [x] Ring 1: Workspace Setup — Completed Jan 4, 2025
 - [x] Ring 2: Error Foundation — Completed Jan 4, 2025
 - [x] Ring 3: Constants Foundation — Completed Jan 4, 2025
-- [ ] Ring 4: Basic Type Aliases ← IN PROGRESS
-- [ ] Ring 5: Test Infrastructure
+- [x] Ring 4: Basic Type Aliases — Completed Jan 4, 2025
+- [ ] Ring 5: Test Infrastructure ← IN PROGRESS
 
 ## Phase 1: Math Library (Rings 6-20)
 - [ ] Rings 6-8: Q64.64 Fixed-Point Math
@@ -402,6 +402,12 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - Rewards: NUM_REWARDS (3)
 - Fixed-point: Q64_RESOLUTION, MIN/MAX_SQRT_PRICE
 - Added explanatory comments for sqrt_price derivation
+- `anchor build` passes ✅
+
+### Build Ring 4: Basic Type Aliases
+- Created `types.rs` with semantic type aliases
+- SqrtPrice (u128), Liquidity (u128), TickIndex (i32), FeeRate (u16), Timestamp (i64)
+- Adds type safety and code readability
 - `anchor build` passes ✅
 
 ---
