@@ -22,6 +22,7 @@ pub fn to_u64(value: u128) -> u64 {
 
 /// Convert Q64.64 to u64 with rounding up
 pub fn to_u64_round_up(value: u128) -> u64 {
+    // (a + b - 1) / b
     let fraction_mask = (1u128 << Q64_RESOLUTION) - 1;
     let val = (value + fraction_mask) >> Q64_RESOLUTION;
     val as u64
