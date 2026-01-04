@@ -3,7 +3,7 @@
 ## Current Position
 - **Mode**: 🔨 BUILD MODE
 - **Learning Status**: COMPLETE (All 23 rings, 111 concepts)
-- **Build Status**: Ring 3 of 200 — IN PROGRESS
+- **Build Status**: Ring 4 of 200 — IN PROGRESS
 
 ## Build Reference
 - **Roadmap**: `/z_cache/learning/build_roadmap.md`
@@ -320,8 +320,8 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 ## Phase 0: Project Foundation (Rings 1-5)
 - [x] Ring 1: Workspace Setup — Completed Jan 4, 2025
 - [x] Ring 2: Error Foundation — Completed Jan 4, 2025
-- [ ] Ring 3: Constants Foundation ← IN PROGRESS
-- [ ] Ring 4: Basic Type Aliases
+- [x] Ring 3: Constants Foundation — Completed Jan 4, 2025
+- [ ] Ring 4: Basic Type Aliases ← IN PROGRESS
 - [ ] Ring 5: Test Infrastructure
 
 ## Phase 1: Math Library (Rings 6-20)
@@ -392,6 +392,16 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - Created `VortexError` enum with `#[error_code]` attribute
 - 10 core errors defined: InvalidTickIndex, InvalidSqrtPrice, LiquidityOverflow, LiquidityUnderflow, TokenAmountOverflow, InvalidTickSpacing, TickArrayNotFound, PositionNotFound, InsufficientLiquidity, InvalidFeeRate
 - Each error has descriptive `#[msg()]` attribute
+- `anchor build` passes ✅
+
+### Build Ring 3: Constants Foundation
+- Created `constants.rs` with all protocol constants
+- Tick bounds: MIN/MAX_TICK_INDEX (±443636)
+- Tick array: TICK_ARRAY_SIZE (88)
+- Fees: MAX_FEE_RATE, FEE_RATE_DENOMINATOR, MAX_PROTOCOL_FEE_RATE
+- Rewards: NUM_REWARDS (3)
+- Fixed-point: Q64_RESOLUTION, MIN/MAX_SQRT_PRICE
+- Added explanatory comments for sqrt_price derivation
 - `anchor build` passes ✅
 
 ---
