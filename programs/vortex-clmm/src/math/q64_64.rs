@@ -20,12 +20,12 @@ pub fn to_u64(value: u128) -> u64 {
     (value >> Q64_RESOLUTION) as u64
 }
 
-// /// Convert Q64.64 to u64 with rounding up
-// pub fn to_u64_round_up(value: u128) -> u64 {
-//     // Your implementation here
-//     // Hint: check if there's a fractional part
-//     u64::from()
-// }
+/// Convert Q64.64 to u64 with rounding up
+pub fn to_u64_round_up(value: u128) -> u64 {
+    let fraction_mask = (1u128 << Q64_RESOLUTION) - 1;
+    let val = (value + fraction_mask) >> Q64_RESOLUTION;
+    val as u64
+}
 
 #[cfg(test)]
 mod tests {
@@ -43,9 +43,9 @@ mod tests {
         assert_eq!(to_u64((1u128 << 64) + (1u128 << 63)), 1); // 1.5 truncates to 1
     }
 
-    // #[test]
-    // fn test_to_u64_round_up() {
-    //     assert_eq!(to_u64_round_up(1u128 << 64), 1);
-    //     assert_eq!(to_u64_round_up((1u128 << 64) + 1), 2); // any fraction rounds up
-    // }
+    #[test]
+    fn test_to_u64_round_up() {
+        assert_eq!(to_u64_round_up(1u128 << 64), 1);
+        assert_eq!(to_u64_round_up((1u128 << 64) + 1), 2); // any fraction rounds up
+    }
 }
