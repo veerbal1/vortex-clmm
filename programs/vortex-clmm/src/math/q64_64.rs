@@ -55,6 +55,21 @@ pub fn mul_round_up(a: u128, b: u128) -> u128 {
     result.as_u128()
 }
 
+/// Divide two Q64.64 numbers (round down)
+pub fn div(a: u128, b: u128) -> u128 {
+    let a_256 = U256::from(a) << 64;
+    let b_256 = U256::from(b);
+    (a_256 / b_256).as_u128()
+}
+
+/// Divide two Q64.64 numbers (round up)
+pub fn div_round_up(a: u128, b: u128) -> u128 {
+    let a_256 = U256::from(a) << 64;
+    let b_256 = U256::from(b);
+    let rounding = b_256 - U256::from(1u128);
+    ((a_256 + rounding) / b_256).as_u128()
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -110,5 +125,15 @@ mod tests {
         assert!(ceil >= floor);
         // They should differ by at most 1
         assert!(ceil - floor <= 1);
+    }
+
+    #[test]
+    fn test_div() {
+        assert_eq!(div(4 << 64, 2 << 64), 2 << 64);
+        assert_eq!(div(6 << 64, 2 << 64), 3 << 64);
+        assert_ne!(div(6 << 64, 2 << 64), 6 << 64);
+
+        assert_eq!(div(9 << 64, 2 << 64), (4 << 64) + (1 << 63));
+        assert_ne!(div(9 << 64, 2 << 64), (4 << 64) + (1 << 64));
     }
 }
