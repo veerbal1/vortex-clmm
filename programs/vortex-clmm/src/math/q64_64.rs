@@ -136,4 +136,32 @@ mod tests {
         assert_eq!(div(9 << 64, 2 << 64), (4 << 64) + (1 << 63));
         assert_ne!(div(9 << 64, 2 << 64), (4 << 64) + (1 << 64));
     }
+
+    #[test]
+    fn test_div_round_up() {
+        assert_eq!(div_round_up(6 << 64, 2 << 64), 3 << 64);
+        assert_eq!(
+            div_round_up(9 << 64, 2 << 64),
+            (4u128 << 64) + (1u128 << 63)
+        );
+
+        let a = 7u128 << 64;
+        let b = 3u128 << 64;
+
+        let floor = div(a, b);
+        let ceil = div_round_up(a, b);
+        assert!(ceil >= floor);
+    }
+
+    #[test]
+    fn test_div_round_up_difference() {
+        let a = (1u128 << 64) + 1; // 1 + epsilon
+        let b = 3u128 << 64; // 3
+
+        let floor = div(a, b);
+        let ceil = div_round_up(a, b);
+
+        // ceil should be >= floor
+        assert!(ceil >= floor);
+    }
 }
