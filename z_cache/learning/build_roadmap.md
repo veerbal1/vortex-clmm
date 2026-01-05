@@ -112,12 +112,12 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Unit tests for conversion
 - **Deliverable**: Basic fixed-point conversion ✅
 
-### Ring 7: Q64.64 Multiplication
-- [ ] Implement `mul(a: u128, b: u128) -> u128` using U256 intermediate
-- [ ] Handle overflow protection
-- [ ] Implement `mul_round_up` variant
-- [ ] Unit tests with edge cases (near max values)
-- **Deliverable**: Safe fixed-point multiplication
+### Ring 7: Q64.64 Multiplication ✅
+- [x] Implement `mul(a: u128, b: u128) -> u128` using U256 intermediate
+- [x] Handle overflow protection
+- [x] Implement `mul_round_up` variant
+- [x] Unit tests with edge cases (near max values)
+- **Deliverable**: Safe fixed-point multiplication ✅
 
 ### Ring 8: Q64.64 Division
 - [ ] Implement `div(a: u128, b: u128) -> u128` using U256 intermediate
