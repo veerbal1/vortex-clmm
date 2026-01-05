@@ -3,7 +3,7 @@
 ## Current Position
 - **Mode**: 🔨 BUILD MODE
 - **Learning Status**: COMPLETE (All 23 rings, 111 concepts)
-- **Build Status**: Ring 9 of 200 — IN PROGRESS
+- **Build Status**: Ring 13 of 200 — IN PROGRESS
 
 ## Build Reference
 - **Roadmap**: `/z_cache/learning/build_roadmap.md`
@@ -326,8 +326,8 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 
 ## Phase 1: Math Library (Rings 6-20)
 - [x] Rings 6-8: Q64.64 Fixed-Point Math ✅
-- [ ] Rings 9-12: U256 Math ← IN PROGRESS
-- [ ] Rings 13-15: Tick Math
+- [x] Rings 9-12: U256 Math ✅ (skipped - using uint crate)
+- [ ] Rings 13-15: Tick Math ← IN PROGRESS
 - [ ] Ring 16: Liquidity Math
 - [ ] Rings 17-19: Token Math
 - [ ] Ring 20: Swap Math
@@ -437,6 +437,11 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - `div_round_up()`: uses `(a + b - 1) / b` ceiling pattern
 - Comprehensive unit tests including edge cases
 - Q64.64 Fixed-Point Math complete! 🎉
+
+### Build Rings 9-12: U256 Math (SKIPPED)
+- Using `uint` crate instead of custom implementation
+- All U256 operations available via `construct_uint!` macro
+- Already integrated in q64_64.rs for mul/div
 
 ---
 
