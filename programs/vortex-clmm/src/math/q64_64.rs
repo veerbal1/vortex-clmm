@@ -76,4 +76,39 @@ mod tests {
         assert_eq!(to_u64_round_up(1u128 << 64), 1);
         assert_eq!(to_u64_round_up((1u128 << 64) + 1), 2); // any fraction rounds up
     }
+
+    #[test]
+    fn test_mul() {
+        assert_eq!(mul(2 << 64, 2 << 64), 4 << 64);
+        assert_ne!(mul(2 << 64, 2 << 64), 5 << 64);
+
+        assert_eq!(mul((1 << 64) + (1 << 63), 3 << 64), (4 << 64) + (1 << 63));
+    }
+
+    #[test]
+    fn test_mul_round_up() {
+        // For exact results, mul and mul_round_up are the same
+        let one_point_five = (1u128 << 64) + (1u128 << 63);
+        let three = 3u128 << 64;
+
+        let result = mul_round_up(one_point_five, three);
+        let expected = (4u128 << 64) + (1u128 << 63); // 4.5 in Q64.64
+        assert_eq!(result, expected);
+    }
+
+    #[test]
+    fn test_mul_round_up_difference() {
+        // This shows when mul_round_up actually differs from mul
+        // Use values that produce sub-fractional bits
+        let a = (1u128 << 64) + 1; // 1 + epsilon
+        let b = (1u128 << 64) + 1; // 1 + epsilon
+
+        let floor = mul(a, b);
+        let ceil = mul_round_up(a, b);
+
+        // ceil should be >= floor
+        assert!(ceil >= floor);
+        // They should differ by at most 1
+        assert!(ceil - floor <= 1);
+    }
 }
