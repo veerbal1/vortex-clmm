@@ -1,3 +1,9 @@
+use uint::construct_uint;
+
+construct_uint! {
+    pub struct U256(4); // 4 * 64 bits = 256 bits
+}
+
 /// Q64.64 fixed-point resolution (64 fractional bits)
 pub const Q64_RESOLUTION: u8 = 64;
 
@@ -26,6 +32,27 @@ pub fn to_u64_round_up(value: u128) -> u64 {
     let fraction_mask = (1u128 << Q64_RESOLUTION) - 1;
     let val = (value + fraction_mask) >> Q64_RESOLUTION;
     val as u64
+}
+
+pub fn mul(a: u128, b: u128) -> u128 {
+    let a_256 = U256::from(a);
+    let b_256 = U256::from(b);
+    let product = a_256 * b_256;
+
+    let result = product >> 64;
+
+    result.as_u128()
+}
+
+pub fn mul_round_up(a: u128, b: u128) -> u128 {
+    let a_256 = U256::from(a);
+    let b_256 = U256::from(b);
+    let product = a_256 * b_256;
+
+    let rounding = U256::from((1u128 << 64) - 1);
+    let result = (product + rounding) >> 64;
+
+    result.as_u128()
 }
 
 #[cfg(test)]
