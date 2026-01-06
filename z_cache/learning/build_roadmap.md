@@ -150,12 +150,12 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - **Deliverable**: sqrt_price to tick conversion ✅
 - ⚠️ **Note**: Code copied from Orca Whirlpools — logarithm algorithm was complex and time-consuming; will study inner workings later
 
-### Ring 15: Tick Math - Utilities
-- [ ] Implement `get_next_valid_tick(tick: i32, tick_spacing: u16, zero_for_one: bool) -> i32`
-- [ ] Implement `is_valid_tick(tick: i32, tick_spacing: u16) -> bool`
-- [ ] Implement `get_start_tick_index(tick: i32, tick_spacing: u16) -> i32`
-- [ ] Unit tests
-- **Deliverable**: Tick navigation helpers
+### Ring 15: Tick Math - Utilities ✅
+- [x] Implement `get_next_valid_tick(tick: i32, tick_spacing: u16, zero_for_one: bool) -> i32`
+- [x] Implement `is_valid_tick(tick: i32, tick_spacing: u16) -> bool`
+- [x] Implement `get_start_tick_index(tick: i32, tick_spacing: u16) -> i32`
+- [x] Unit tests (10 tests pass)
+- **Deliverable**: Tick navigation helpers ✅
 
 ### Ring 16: Liquidity Math - Add/Sub
 - [ ] Create `math/liquidity_math.rs`

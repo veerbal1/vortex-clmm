@@ -3,7 +3,7 @@
 ## Current Position
 - **Mode**: 🔨 BUILD MODE
 - **Learning Status**: COMPLETE (All 23 rings, 111 concepts)
-- **Build Status**: Ring 13 of 200 — IN PROGRESS
+- **Build Status**: Ring 15 of 200 — COMPLETE
 
 ## Build Reference
 - **Roadmap**: `/z_cache/learning/build_roadmap.md`
@@ -328,8 +328,8 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - [x] Rings 6-8: Q64.64 Fixed-Point Math ✅
 - [x] Rings 9-12: U256 Math ✅ (skipped - using uint crate)
 - [x] Rings 13-14: Tick Math ✅ (tick ↔ sqrt_price conversion)
-- [ ] Ring 15: Tick Math Utilities ← NEXT
-- [ ] Ring 16: Liquidity Math
+- [x] Ring 15: Tick Math Utilities ✅
+- [ ] Ring 16: Liquidity Math ← NEXT
 - [ ] Rings 17-19: Token Math
 - [ ] Ring 20: Swap Math
 
@@ -455,6 +455,17 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - Constants: `LOG_B_2_X32`, `BIT_PRECISION=14`, error margins for precision handling
 - 16 unit tests pass including roundtrip tests ✅
 - Note: Inner log math understanding deferred for future study
+
+### Build Ring 15: Tick Math Utilities ✅ — Completed Jan 6, 2025
+- Created `state/tick.rs` with 3 tick utility functions
+- `is_valid_tick(tick, tick_spacing)`: checks if tick is multiple of spacing
+- `get_start_tick_index(tick, tick_spacing)`: finds TickArray start for any tick
+  - Handles negative ticks with floor division fix
+- `get_next_valid_tick(tick, tick_spacing, zero_for_one)`: finds next valid tick boundary
+  - 4 cases: positive/negative × left/right direction
+  - Floor (left) vs ceiling (right) rounding
+- Comprehensive doc comments with examples and case tables
+- 10 unit tests covering all cases pass ✅
 
 ---
 
