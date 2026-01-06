@@ -4,6 +4,11 @@ use crate::errors::VortexError;
 
 pub const MAX_SQRT_PRICE_X64: u128 = 79226673515401279992447579055;
 pub const MIN_SQRT_PRICE_X64: u128 = 4295048016;
+// Constants for sqrt_price → tick conversion
+const LOG_B_2_X32: i128 = 59543866431248;
+const BIT_PRECISION: u32 = 14;
+const LOG_B_P_ERR_MARGIN_LOWER_X64: i128 = 184467440737095516;
+const LOG_B_P_ERR_MARGIN_UPPER_X64: i128 = 15793534762490258745;
 
 /// Helper: multiply two u128s, shift right 96 bits (for Q96 math)
 pub fn mul_shift_96(a: u128, b: u128) -> u128 {
@@ -26,9 +31,9 @@ pub fn get_sqrt_price_at_tick(tick: i32) -> Result<u128, VortexError> {
 
 fn get_sqrt_price_positive_tick(tick: i32) -> u128 {
     let mut ratio = if tick & 1 != 0 {
-        79232123823359799118286999567_u128
+        79232123823359799118286999567
     } else {
-        79228162514264337593543950336_u128
+        79228162514264337593543950336
     };
 
     if tick & 2 != 0 {
@@ -175,6 +180,24 @@ fn get_sqrt_price_negative_tick(tick: i32) -> u128 {
     ratio
 }
 
+/// Get Tick from Sqrt Price
+
+/// Convert sqrt_price (Q64.64) to tick index
+pub fn get_tick_at_sqrt_price(sqrt_price_x64: u128) -> Result<i32, VortexError> {
+    if sqrt_price_x64 < MIN_SQRT_PRICE_X64 || sqrt_price_x64 > MAX_SQRT_PRICE_X64 {
+        return Err(VortexError::InvalidSqrtPrice);
+    }
+
+    // Step 1: Find MSB (most significant bit) position
+    // This gives us the integer part of log₂
+    let msb: u32 = 128 - sqrt_price_x64.leading_zeros() - 1;
+
+    // Convert to Q32 format and adjust for Q64.64 input
+    // Our input is Q64.64, so we subtract 64 to get the actual log₂ integer part
+    let log2p_integer_x32: i128 = ((msb as i128) - 64) << 32;
+
+    todo!()
+}
 #[cfg(test)]
 mod tests {
     use super::*;
