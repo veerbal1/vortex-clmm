@@ -327,7 +327,8 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 ## Phase 1: Math Library (Rings 6-20)
 - [x] Rings 6-8: Q64.64 Fixed-Point Math ✅
 - [x] Rings 9-12: U256 Math ✅ (skipped - using uint crate)
-- [ ] Rings 13-15: Tick Math ← IN PROGRESS
+- [x] Rings 13-14: Tick Math ✅ (tick ↔ sqrt_price conversion)
+- [ ] Ring 15: Tick Math Utilities ← NEXT
 - [ ] Ring 16: Liquidity Math
 - [ ] Rings 17-19: Token Math
 - [ ] Ring 20: Swap Math
@@ -442,6 +443,18 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - Using `uint` crate instead of custom implementation
 - All U256 operations available via `construct_uint!` macro
 - Already integrated in q64_64.rs for mul/div
+
+### Build Rings 13-14: Tick Math ✅ — Completed Jan 6, 2025
+- Created `math/tick_math.rs` with tick ↔ sqrt_price conversions
+- `get_sqrt_price_at_tick(tick)`: uses bit multiplication with pre-computed constants for 1.0001^tick
+- `get_sqrt_price_positive_tick()`: Q96 math with lookup table optimization
+- `get_sqrt_price_negative_tick()`: reciprocal approach for negative ticks
+- `get_tick_at_sqrt_price(sqrt_price)`: log₂ approximation via MSB + iterative squaring
+- Algorithm: MSB → integer part, squaring trick → fractional bits, change of base → tick
+- Error margins + verification step ensures correct floor behavior
+- Constants: `LOG_B_2_X32`, `BIT_PRECISION=14`, error margins for precision handling
+- 16 unit tests pass including roundtrip tests ✅
+- Note: Inner log math understanding deferred for future study
 
 ---
 
