@@ -133,21 +133,22 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Shifts: `<<`, `>>` operators
 - **Deliverable**: 256-bit support via external crate ✅
 
-### Ring 13: Tick Math - tick_to_sqrt_price
-- [ ] Create `math/tick_math.rs`
-- [ ] Implement `get_sqrt_price_at_tick(tick: i32) -> u128`
-- [ ] Use the 1.0001^tick formula with lookup table optimization
-- [ ] Handle negative ticks
-- [ ] Validate tick is within bounds
-- [ ] Unit tests: tick 0 = 2^64, known tick values
-- **Deliverable**: Tick to sqrt_price conversion
+### Ring 13: Tick Math - tick_to_sqrt_price ✅
+- [x] Create `math/tick_math.rs`
+- [x] Implement `get_sqrt_price_at_tick(tick: i32) -> u128`
+- [x] Use the 1.0001^tick formula with lookup table optimization
+- [x] Handle negative ticks (reciprocal approach)
+- [x] Validate tick is within bounds
+- [x] Unit tests: tick 0 = 2^64, known tick values
+- **Deliverable**: Tick to sqrt_price conversion ✅
 
-### Ring 14: Tick Math - sqrt_price_to_tick
-- [ ] Implement `get_tick_at_sqrt_price(sqrt_price: u128) -> i32`
-- [ ] Binary search or logarithm approach
-- [ ] Ensure round-down behavior
-- [ ] Unit tests: roundtrip with tick_to_sqrt_price
-- **Deliverable**: sqrt_price to tick conversion
+### Ring 14: Tick Math - sqrt_price_to_tick ✅
+- [x] Implement `get_tick_at_sqrt_price(sqrt_price: u128) -> i32`
+- [x] Log₂ approximation via MSB + iterative squaring
+- [x] Ensure round-down (floor) behavior with verification step
+- [x] Unit tests: roundtrip with tick_to_sqrt_price (16 tests pass)
+- **Deliverable**: sqrt_price to tick conversion ✅
+- ⚠️ **Note**: Code copied from Orca Whirlpools — logarithm algorithm was complex and time-consuming; will study inner workings later
 
 ### Ring 15: Tick Math - Utilities
 - [ ] Implement `get_next_valid_tick(tick: i32, tick_spacing: u16, zero_for_one: bool) -> i32`
