@@ -148,6 +148,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Ensure round-down (floor) behavior with verification step
 - [x] Unit tests: roundtrip with tick_to_sqrt_price (16 tests pass)
 - **Deliverable**: sqrt_price to tick conversion ✅
+- ⚠️ **Note**: Code copied from Orca Whirlpools — logarithm algorithm was complex and time-consuming; will study inner workings later
 
 ### Ring 15: Tick Math - Utilities
 - [ ] Implement `get_next_valid_tick(tick: i32, tick_spacing: u16, zero_for_one: bool) -> i32`
