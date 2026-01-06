@@ -183,6 +183,8 @@ fn get_sqrt_price_negative_tick(tick: i32) -> u128 {
 /// Get Tick from Sqrt Price
 
 /// Convert sqrt_price (Q64.64) to tick index
+/// This function has been copied from ORCA codebase, I just know it gives tick index for a given sqrt price
+/// I have yet to understand the inner working of it. e.g log math etc.
 pub fn get_tick_at_sqrt_price(sqrt_price_x64: u128) -> Result<i32, VortexError> {
     if sqrt_price_x64 < MIN_SQRT_PRICE_X64 || sqrt_price_x64 > MAX_SQRT_PRICE_X64 {
         return Err(VortexError::InvalidSqrtPrice);
@@ -196,7 +198,59 @@ pub fn get_tick_at_sqrt_price(sqrt_price_x64: u128) -> Result<i32, VortexError> 
     // Our input is Q64.64, so we subtract 64 to get the actual log₂ integer part
     let log2p_integer_x32: i128 = ((msb as i128) - 64) << 32;
 
-    todo!()
+    // Step 2: Calculate fractional part of log₂ using iterative squaring
+    // Normalize r to be in range [1, 2) by shifting to position 63
+    let mut r: u128 = if msb >= 64 {
+        sqrt_price_x64 >> (msb - 63)
+    } else {
+        sqrt_price_x64 << (63 - msb)
+    };
+
+    // Iterate to find fractional bits
+    // Start with bit = 0.5 in Q64.64 format
+    let mut bit: i128 = 0x8000_0000_0000_0000i128;
+    let mut precision = 0;
+    let mut log2p_fraction_x64: i128 = 0;
+
+    while bit > 0 && precision < BIT_PRECISION {
+        // Square r (this doubles the log value, revealing the next bit)
+        r = r.wrapping_mul(r);
+        // Check if r >= 2 by looking at bit 127
+        let is_r_more_than_two = r >> 127;
+        // Shift right by 63 + (1 if r >= 2) to normalize back to [1, 2)
+        r >>= 63 + is_r_more_than_two;
+        // If r was >= 2, add this bit to our fraction
+        log2p_fraction_x64 += bit * (is_r_more_than_two as i128);
+        // Move to next bit
+        bit >>= 1;
+        precision += 1;
+    }
+
+    // Step 3: Combine integer and fractional parts
+    let log2p_fraction_x32 = log2p_fraction_x64 >> 32;
+    let log2p_x32 = log2p_integer_x32 + log2p_fraction_x32;
+
+    // Step 4: Convert from log₂ to log₁.₀₀₀₁ using change of base
+    // tick = log2(sqrt_price) / log2(1.0001^0.5) = log2(sqrt_price) * LOG_B_2_X32
+    let logbp_x64 = log2p_x32 * LOG_B_2_X32;
+
+    // Step 5: Calculate tick_low and tick_high with error margins
+    // The iterative approximation may be slightly off, so we check both bounds
+    let tick_low: i32 = ((logbp_x64 - LOG_B_P_ERR_MARGIN_LOWER_X64) >> 64) as i32;
+    let tick_high: i32 = ((logbp_x64 + LOG_B_P_ERR_MARGIN_UPPER_X64) >> 64) as i32;
+
+    // Step 6: Verify which tick is correct
+    if tick_low == tick_high {
+        Ok(tick_low)
+    } else {
+        // Check if tick_high gives a sqrt_price <= our input
+        let sqrt_price_at_tick_high = get_sqrt_price_at_tick(tick_high)?;
+        if sqrt_price_at_tick_high <= sqrt_price_x64 {
+            Ok(tick_high)
+        } else {
+            Ok(tick_low)
+        }
+    }
 }
 #[cfg(test)]
 mod tests {
@@ -245,5 +299,90 @@ mod tests {
     fn test_tick_out_of_bounds_low() {
         let result = get_sqrt_price_at_tick(MIN_TICK_INDEX - 1);
         assert!(result.is_err());
+    }
+
+    // ========================
+    // get_tick_at_sqrt_price tests
+    // ========================
+
+    #[test]
+    fn test_tick_at_sqrt_price_at_one() {
+        // sqrt_price = 2^64 (1.0 in Q64.64) should give tick 0
+        let sqrt_price_x64: u128 = 18446744073709551616; // 2^64
+        let tick = get_tick_at_sqrt_price(sqrt_price_x64).unwrap();
+        assert_eq!(tick, 0);
+    }
+
+    #[test]
+    fn test_tick_at_max_sqrt_price() {
+        let tick = get_tick_at_sqrt_price(MAX_SQRT_PRICE_X64).unwrap();
+        assert_eq!(tick, MAX_TICK_INDEX);
+    }
+
+    #[test]
+    fn test_tick_at_min_sqrt_price() {
+        let tick = get_tick_at_sqrt_price(MIN_SQRT_PRICE_X64).unwrap();
+        assert_eq!(tick, MIN_TICK_INDEX);
+    }
+
+    #[test]
+    fn test_tick_at_sqrt_price_out_of_bounds_low() {
+        let result = get_tick_at_sqrt_price(MIN_SQRT_PRICE_X64 - 1);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_tick_at_sqrt_price_out_of_bounds_high() {
+        let result = get_tick_at_sqrt_price(MAX_SQRT_PRICE_X64 + 1);
+        assert!(result.is_err());
+    }
+
+    // ========================
+    // Roundtrip tests (most important!)
+    // ========================
+
+    #[test]
+    fn test_roundtrip_tick_0() {
+        let original_tick = 0;
+        let sqrt_price = get_sqrt_price_at_tick(original_tick).unwrap();
+        let recovered_tick = get_tick_at_sqrt_price(sqrt_price).unwrap();
+        assert_eq!(original_tick, recovered_tick);
+    }
+
+    #[test]
+    fn test_roundtrip_tick_positive() {
+        for tick in [1, 10, 100, 1000, 10000, 100000, MAX_TICK_INDEX] {
+            let sqrt_price = get_sqrt_price_at_tick(tick).unwrap();
+            let recovered_tick = get_tick_at_sqrt_price(sqrt_price).unwrap();
+            assert_eq!(tick, recovered_tick, "Roundtrip failed for tick {}", tick);
+        }
+    }
+
+    #[test]
+    fn test_roundtrip_tick_negative() {
+        for tick in [-1, -10, -100, -1000, -10000, -100000, MIN_TICK_INDEX] {
+            let sqrt_price = get_sqrt_price_at_tick(tick).unwrap();
+            let recovered_tick = get_tick_at_sqrt_price(sqrt_price).unwrap();
+            assert_eq!(tick, recovered_tick, "Roundtrip failed for tick {}", tick);
+        }
+    }
+
+    #[test]
+    fn test_sqrt_price_floor_behavior() {
+        // When sqrt_price is between tick N and tick N+1,
+        // get_tick_at_sqrt_price should return N (floor behavior)
+        let tick = 100;
+        let sqrt_price_at_tick = get_sqrt_price_at_tick(tick).unwrap();
+        let sqrt_price_at_tick_plus_1 = get_sqrt_price_at_tick(tick + 1).unwrap();
+
+        // sqrt_price slightly above tick 100 should still return 100
+        let sqrt_price_between = sqrt_price_at_tick + 1;
+        let result = get_tick_at_sqrt_price(sqrt_price_between).unwrap();
+        assert_eq!(result, tick);
+
+        // sqrt_price just below tick 101 should return 100
+        let sqrt_price_just_below = sqrt_price_at_tick_plus_1 - 1;
+        let result2 = get_tick_at_sqrt_price(sqrt_price_just_below).unwrap();
+        assert_eq!(result2, tick);
     }
 }
