@@ -495,6 +495,15 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - 6 unit tests including roundtrip test pass ✅
 - Roundtrip: `Original: 1000, Recovered: 1000` — perfect precision
 
+### Type-Safe Q64_64 Refactoring ✅ — Completed Jan 7, 2025
+- Created `Q64_64` newtype struct in `q64_64.rs` for compile-time type safety
+- Methods: `from_raw()`, `from_encoded()`, `inner()`, `to_u64()`, `to_u128()`
+- Added `checked_mul()` and `checked_div()` with overflow protection
+- Refactored all token_math functions to use `Q64_64` instead of raw `u128`
+- **Improvement over Orca**: Orca uses plain `u128` — we use newtype for compiler-enforced safety
+- Prevents accidental mixing of scaled/unscaled values at compile time
+- All 6 tests still pass ✅
+
 ---
 
 ## Summary Stats

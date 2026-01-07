@@ -185,6 +185,13 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Unit tests (6 tests including roundtrip)
 - **Deliverable**: Liquidity calculation from token amounts ✅
 
+### Type-Safe Q64_64 Refactoring ✅
+- [x] Create `Q64_64` newtype struct with `from_raw()`, `from_encoded()`, `inner()`, `to_u64()`
+- [x] Add `checked_mul()` and `checked_div()` with overflow protection
+- [x] Refactor all token_math functions to accept/return `Q64_64`
+- [x] Update all unit tests
+- **Deliverable**: Compile-time type safety (improvement over Orca's plain u128 approach) ✅
+
 ### Ring 20: Swap Math - Core Step
 - [ ] Create `math/swap_math.rs`
 - [ ] Implement `compute_swap_step(sqrt_price_current: u128, sqrt_price_target: u128, liquidity: u128, amount_remaining: u64, fee_rate: u16) -> SwapStepResult`
