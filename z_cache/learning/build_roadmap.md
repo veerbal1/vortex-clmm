@@ -157,13 +157,13 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Unit tests (10 tests pass)
 - **Deliverable**: Tick navigation helpers ✅
 
-### Ring 16: Liquidity Math - Add/Sub
-- [ ] Create `math/liquidity_math.rs`
-- [ ] Implement `add_liquidity(a: u128, b: u128) -> Result<u128>`
-- [ ] Implement `sub_liquidity(a: u128, b: u128) -> Result<u128>`
-- [ ] Overflow/underflow protection
-- [ ] Unit tests
-- **Deliverable**: Safe liquidity arithmetic
+### Ring 16: Liquidity Math - Add/Sub ✅
+- [x] Create `math/liquidity_math.rs`
+- [x] Implement `add_liquidity(a: u128, b: u128) -> Result<u128>`
+- [x] Implement `sub_liquidity(a: u128, b: u128) -> Result<u128>`
+- [x] Overflow/underflow protection
+- [x] Unit tests (4 tests pass)
+- **Deliverable**: Safe liquidity arithmetic ✅
 
 ### Ring 17: Token Math - Amount from Liquidity (Token A)
 - [ ] Create `math/token_math.rs`

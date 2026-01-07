@@ -3,7 +3,7 @@
 ## Current Position
 - **Mode**: 🔨 BUILD MODE
 - **Learning Status**: COMPLETE (All 23 rings, 111 concepts)
-- **Build Status**: Ring 15 of 200 — COMPLETE
+- **Build Status**: Ring 16 of 200 — COMPLETE
 
 ## Build Reference
 - **Roadmap**: `/z_cache/learning/build_roadmap.md`
@@ -329,8 +329,8 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - [x] Rings 9-12: U256 Math ✅ (skipped - using uint crate)
 - [x] Rings 13-14: Tick Math ✅ (tick ↔ sqrt_price conversion)
 - [x] Ring 15: Tick Math Utilities ✅
-- [ ] Ring 16: Liquidity Math ← NEXT
-- [ ] Rings 17-19: Token Math
+- [x] Ring 16: Liquidity Math ✅
+- [ ] Rings 17-19: Token Math ← NEXT
 - [ ] Ring 20: Swap Math
 
 ## Phase 2: State Structures (Rings 21-40)
@@ -466,6 +466,14 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
   - Floor (left) vs ceiling (right) rounding
 - Comprehensive doc comments with examples and case tables
 - 10 unit tests covering all cases pass ✅
+
+### Build Ring 16: Liquidity Math ✅ — Completed Jan 7, 2025
+- Created `math/liquidity_math.rs` with safe arithmetic functions
+- `add_liquidity(a, b)`: checked addition with `LiquidityOverflow` error
+- `sub_liquidity(a, b)`: checked subtraction with `LiquidityUnderflow` error
+- Pattern: `checked_add().ok_or(VortexError::...)` for safe conversion
+- Doc comments for each function
+- 4 unit tests (happy path + overflow/underflow cases) pass ✅
 
 ---
 
