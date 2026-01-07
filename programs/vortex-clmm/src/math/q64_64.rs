@@ -1,7 +1,75 @@
+use std::ops::{Add, Sub};
+
 use uint::construct_uint;
+
+use crate::errors::VortexError;
 
 construct_uint! {
     pub struct U256(4); // 4 * 64 bits = 256 bits
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+pub struct Q64_64(u128);
+
+impl Q64_64 {
+    /// Create from raw u64 (encodes to Q64.64)
+    pub fn from_raw(raw: u64) -> Self {
+        Q64_64((raw as u128) << 64)
+    }
+
+    /// Create from already-encoded u128 (wraps without shifting)
+    pub fn from_encoded(encoded: u128) -> Self {
+        Q64_64(encoded)
+    }
+
+    /// Get inner u128 value
+    pub fn inner(self) -> u128 {
+        self.0
+    }
+
+    /// Convert back to u64 (truncates fractional part)
+    pub fn to_u64(self) -> u64 {
+        (self.0 >> 64) as u64
+    }
+}
+
+impl Add for Q64_64 {
+    type Output = Self;
+    fn add(self, other: Self) -> Self {
+        Q64_64(self.0 + other.0)
+    }
+}
+
+impl Sub for Q64_64 {
+    type Output = Self;
+    fn sub(self, other: Self) -> Self {
+        Q64_64(self.0 - other.0)
+    }
+}
+
+impl Q64_64 {
+    /// Multiply two Q64.64 values with overflow protection
+    pub fn checked_mul(self, other: Self) -> Result<Self, VortexError> {
+        let a = U256::from(self.0);
+        let b = U256::from(other.0);
+        let result = (a * b) >> 64;
+
+        // Check if result fits in u128
+        if result > U256::from(u128::MAX) {
+            return Err(VortexError::LiquidityOverflow);
+        }
+        Ok(Q64_64(result.as_u128()))
+    }
+
+    /// Divide two Q64.64 values with zero-division protection
+    pub fn checked_div(self, other: Self) -> Result<Self, VortexError> {
+        if other.0 == 0 {
+            return Err(VortexError::LiquidityUnderflow); // or create DivisionByZero error
+        }
+        let a = U256::from(self.0) << 64;
+        let b = U256::from(other.0);
+        Ok(Q64_64((a / b).as_u128()))
+    }
 }
 
 /// Q64.64 fixed-point resolution (64 fractional bits)
