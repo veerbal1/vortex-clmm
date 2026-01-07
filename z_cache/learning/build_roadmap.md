@@ -165,19 +165,19 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Unit tests (4 tests pass)
 - **Deliverable**: Safe liquidity arithmetic ✅
 
-### Ring 17: Token Math - Amount from Liquidity (Token A)
-- [ ] Create `math/token_math.rs`
-- [ ] Implement `get_amount_a_delta(sqrt_price_lower: u128, sqrt_price_upper: u128, liquidity: u128, round_up: bool) -> u64`
-- [ ] Formula: `L * (1/sqrt_lower - 1/sqrt_upper)`
-- [ ] Use U256 for intermediate calculations
-- [ ] Unit tests with known values
-- **Deliverable**: Token A amount calculation
+### Ring 17: Token Math - Amount from Liquidity (Token A) ✅
+- [x] Create `math/token_math.rs`
+- [x] Implement `get_amount_a_delta(sqrt_price_lower: u128, sqrt_price_upper: u128, liquidity: u128, round_up: bool) -> u64`
+- [x] Formula: `L * (sqrt_upper - sqrt_lower) / (sqrt_lower * sqrt_upper)`
+- [x] Uses q64_64 utilities for precision
+- [x] Unit tests with known values
+- **Deliverable**: Token A amount calculation ✅
 
-### Ring 18: Token Math - Amount from Liquidity (Token B)
-- [ ] Implement `get_amount_b_delta(sqrt_price_lower: u128, sqrt_price_upper: u128, liquidity: u128, round_up: bool) -> u64`
-- [ ] Formula: `L * (sqrt_upper - sqrt_lower)`
-- [ ] Unit tests
-- **Deliverable**: Token B amount calculation
+### Ring 18: Token Math - Amount from Liquidity (Token B) ✅
+- [x] Implement `get_amount_b_delta(sqrt_price_lower: u128, sqrt_price_upper: u128, liquidity: u128, round_up: bool) -> u64`
+- [x] Formula: `L * (sqrt_upper - sqrt_lower)`
+- [x] Unit tests
+- **Deliverable**: Token B amount calculation ✅
 
 ### Ring 19: Token Math - Liquidity from Amounts
 - [ ] Implement `get_liquidity_for_amounts(sqrt_price: u128, sqrt_price_lower: u128, sqrt_price_upper: u128, amount_a: u64, amount_b: u64) -> u128`

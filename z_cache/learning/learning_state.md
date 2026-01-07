@@ -3,7 +3,7 @@
 ## Current Position
 - **Mode**: 🔨 BUILD MODE
 - **Learning Status**: COMPLETE (All 23 rings, 111 concepts)
-- **Build Status**: Ring 16 of 200 — COMPLETE
+- **Build Status**: Ring 18 of 200 — COMPLETE
 
 ## Build Reference
 - **Roadmap**: `/z_cache/learning/build_roadmap.md`
@@ -330,7 +330,8 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - [x] Rings 13-14: Tick Math ✅ (tick ↔ sqrt_price conversion)
 - [x] Ring 15: Tick Math Utilities ✅
 - [x] Ring 16: Liquidity Math ✅
-- [ ] Rings 17-19: Token Math ← NEXT
+- [x] Rings 17-18: Token Math (Amount A & B) ✅
+- [ ] Ring 19: Token Math (Liquidity from Amounts) ← NEXT
 - [ ] Ring 20: Swap Math
 
 ## Phase 2: State Structures (Rings 21-40)
@@ -474,6 +475,17 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - Pattern: `checked_add().ok_or(VortexError::...)` for safe conversion
 - Doc comments for each function
 - 4 unit tests (happy path + overflow/underflow cases) pass ✅
+
+### Build Rings 17-18: Token Math ✅ — Completed Jan 7, 2025
+- Created `math/token_math.rs` with token amount calculations
+- `get_amount_a_delta(lower, upper, liquidity, round_up)`: Token A from liquidity
+  - Formula: Δx = L × (√P_upper - √P_lower) / (√P_lower × √P_upper)
+  - Uses q64_64::mul and q64_64::div for precision
+- `get_amount_b_delta(lower, upper, liquidity, round_up)`: Token B from liquidity
+  - Formula: Δy = L × (√P_upper - √P_lower)
+  - Simpler — just one multiplication
+- Both support round_up parameter for deposit vs withdrawal
+- 2 unit tests pass ✅
 
 ---
 
