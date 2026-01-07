@@ -3,7 +3,7 @@
 ## Current Position
 - **Mode**: 🔨 BUILD MODE
 - **Learning Status**: COMPLETE (All 23 rings, 111 concepts)
-- **Build Status**: Ring 18 of 200 — COMPLETE
+- **Build Status**: Ring 19 of 200 — COMPLETE
 
 ## Build Reference
 - **Roadmap**: `/z_cache/learning/build_roadmap.md`
@@ -331,8 +331,8 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - [x] Ring 15: Tick Math Utilities ✅
 - [x] Ring 16: Liquidity Math ✅
 - [x] Rings 17-18: Token Math (Amount A & B) ✅
-- [ ] Ring 19: Token Math (Liquidity from Amounts) ← NEXT
-- [ ] Ring 20: Swap Math
+- [x] Ring 19: Token Math (Liquidity from Amounts) ✅
+- [ ] Ring 20: Swap Math ← NEXT
 
 ## Phase 2: State Structures (Rings 21-40)
 - [ ] Rings 21-27: Core Accounts (Config, FeeTier, Whirlpool)
@@ -486,6 +486,14 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
   - Simpler — just one multiplication
 - Both support round_up parameter for deposit vs withdrawal
 - 2 unit tests pass ✅
+
+### Build Ring 19: Token Math (Liquidity from Amounts) ✅ — Completed Jan 7, 2025
+- Added `get_liquidity_for_amounts(current, lower, upper, amount_a, amount_b)` to `token_math.rs`
+- 3-case branching: price below (use A), in range (min), above (use B)
+- Key bug fixed: raw u64 amounts must be shifted left 64 before Q64.64 operations
+- Added type aliases (SqrtPrice, Liquidity) for clearer API
+- 6 unit tests including roundtrip test pass ✅
+- Roundtrip: `Original: 1000, Recovered: 1000` — perfect precision
 
 ---
 

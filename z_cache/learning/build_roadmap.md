@@ -179,11 +179,11 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Unit tests
 - **Deliverable**: Token B amount calculation ✅
 
-### Ring 19: Token Math - Liquidity from Amounts
-- [ ] Implement `get_liquidity_for_amounts(sqrt_price: u128, sqrt_price_lower: u128, sqrt_price_upper: u128, amount_a: u64, amount_b: u64) -> u128`
-- [ ] Handle three cases: price below, in range, above
-- [ ] Unit tests
-- **Deliverable**: Liquidity calculation from token amounts
+### Ring 19: Token Math - Liquidity from Amounts ✅
+- [x] Implement `get_liquidity_for_amounts(sqrt_price: u128, sqrt_price_lower: u128, sqrt_price_upper: u128, amount_a: u64, amount_b: u64) -> u128`
+- [x] Handle three cases: price below, in range, above
+- [x] Unit tests (6 tests including roundtrip)
+- **Deliverable**: Liquidity calculation from token amounts ✅
 
 ### Ring 20: Swap Math - Core Step
 - [ ] Create `math/swap_math.rs`
