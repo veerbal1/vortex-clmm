@@ -1,3 +1,22 @@
+use anchor_lang::prelude::*;
+
+pub const NUM_REWARDS: usize = 3;
+
+#[repr(C, packed)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, InitSpace)]
+pub struct Tick {
+    pub initialized: bool,
+    pub liquidity_net: i128,
+    pub liquidity_gross: u128,
+    pub fee_growth_outside_a: u128,
+    pub fee_growth_outside_b: u128,
+    pub reward_growths_outside: [u128; 3],
+}
+
+impl Tick {
+    pub const LEN: usize = Self::INIT_SPACE;
+}
+
 /// Check if a tick is valid for the given tick spacing.
 /// Valid ticks are multiples of tick_spacing.
 /// Example: tick_spacing=10 → valid ticks are ..., -20, -10, 0, 10, 20, ...
