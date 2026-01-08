@@ -1,6 +1,8 @@
 use crate::errors::VortexError;
 use crate::math::q64_64::{self, Q64_64};
-use crate::math::{get_amount_a_delta, get_amount_b_delta};
+use crate::math::token_math::{
+    get_amount_a_delta, get_amount_b_delta, get_next_sqrt_price_from_a, get_next_sqrt_price_from_b,
+};
 
 /// Result of a single swap step
 #[derive(Debug, Clone, Copy)]
@@ -78,9 +80,47 @@ pub fn compute_swap_step(
     // Step 4: Do we reach the boundary or stop early?
     let reaches_boundary = amount_after_fee.inner() >= max_swap_in_tick.inner();
 
-    // Step 5 & 6: Calculate actual amounts (TODO: implement in Ring 20d)
-    // For now, placeholder to allow build
-    let _ = reaches_boundary;
-    let _ = fee_amount;
-    todo!("Complete swap step calculation in Ring 20d")
+    // Step 5: Calculate sqrt_price_next
+    let sqrt_price_next = if reaches_boundary {
+        // We hit the boundary
+        sqrt_price_target
+    } else {
+        // We stay within tick - calculate where we actually stop
+        if a_to_b {
+            get_next_sqrt_price_from_a(sqrt_price_current, liquidity, amount_after_fee, true)?
+        } else {
+            get_next_sqrt_price_from_b(sqrt_price_current, liquidity, amount_after_fee, true)?
+        }
+    };
+
+    // Step 6: Calculate amount_in and amount_out
+    let (amount_in, amount_out) = if reaches_boundary {
+        // We hit boundary - use max_swap_in_tick as amount_in
+        let amount_in = max_swap_in_tick;
+        let amount_out = if a_to_b {
+            // Selling A, getting B
+            get_amount_b_delta(sqrt_price_next, sqrt_price_current, liquidity, false)?
+        } else {
+            // Selling B, getting A
+            get_amount_a_delta(sqrt_price_current, sqrt_price_next, liquidity, false)?
+        };
+        (amount_in, amount_out)
+    } else {
+        // We stay within tick - use amount_after_fee as amount_in
+        let amount_in = amount_after_fee;
+        let amount_out = if a_to_b {
+            get_amount_b_delta(sqrt_price_next, sqrt_price_current, liquidity, false)?
+        } else {
+            get_amount_a_delta(sqrt_price_current, sqrt_price_next, liquidity, false)?
+        };
+        (amount_in, amount_out)
+    };
+
+    // Step 7: Return result
+    Ok(SwapStepResult {
+        sqrt_price_next,
+        amount_in,
+        amount_out,
+        fee_amount: Q64_64::from_encoded(fee_amount),
+    })
 }
