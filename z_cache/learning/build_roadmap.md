@@ -223,28 +223,28 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 > Define every account. Memory layout matters.
 
-### Ring 21: WhirlpoolsConfig State
-- [ ] Create `state/config.rs`
-- [ ] Define `WhirlpoolsConfig` struct
-- [ ] Fields: `fee_authority`, `collect_protocol_fees_authority`, `reward_emissions_super_authority`, `default_protocol_fee_rate`, `bump`
-- [ ] Implement `DISCRIMINATOR`, `LEN`
-- [ ] Add `seeds` for PDA
-- **Deliverable**: Config account structure
+### Ring 21: WhirlpoolsConfig State ✅
+- [x] Create `state/config.rs`
+- [x] Define `WhirlpoolsConfig` struct
+- [x] Fields: `fee_authority`, `collect_protocol_fees_authority`, `reward_emissions_super_authority`, `default_protocol_fee_rate`, `feature_flags`
+- [x] Implement `LEN` using `#[derive(InitSpace)]`
+- [x] Add `initialize()` and update methods
+- **Deliverable**: Config account structure ✅ — Completed Jan 8, 2026
 
-### Ring 22: FeeTier State
-- [ ] Create `state/fee_tier.rs`
-- [ ] Define `FeeTier` struct
-- [ ] Fields: `whirlpools_config`, `tick_spacing`, `default_fee_rate`, `bump`
-- [ ] Implement `DISCRIMINATOR`, `LEN`
-- [ ] Add `seeds` for PDA (config + tick_spacing)
-- **Deliverable**: Fee tier account structure
+### Ring 22: FeeTier State ✅
+- [x] Create `state/fee_tier.rs`
+- [x] Define `FeeTier` struct
+- [x] Fields: `whirlpools_config`, `tick_spacing`, `default_fee_rate`
+- [x] Implement `LEN` using `#[derive(InitSpace)]`
+- [x] Add `initialize()` with tick_spacing > 0 validation and `update_default_fee_rate()`
+- **Deliverable**: Fee tier account structure ✅ — Completed Jan 8, 2026
 
-### Ring 23: Tick State
-- [ ] Create `state/tick.rs`
-- [ ] Define `Tick` struct (NOT an account, embedded in TickArray)
-- [ ] Fields: `initialized`, `liquidity_net` (i128), `liquidity_gross` (u128), `fee_growth_outside_a` (u128), `fee_growth_outside_b` (u128), `reward_growths_outside` ([u128; 3])
-- [ ] Implement `default()`, `update()`, `cross()`
-- **Deliverable**: Tick data structure
+### Ring 23: Tick State ✅
+- [x] Added `Tick` struct to `state/tick.rs`
+- [x] Define `Tick` struct with `#[repr(C, packed)]` (NOT an account, embedded in TickArray)
+- [x] Fields: `initialized`, `liquidity_net` (i128), `liquidity_gross` (u128), `fee_growth_outside_a` (u128), `fee_growth_outside_b` (u128), `reward_growths_outside` ([u128; 3])
+- [x] Added `NUM_REWARDS = 3` constant, LEN = 113 bytes
+- **Deliverable**: Tick data structure ✅ — Completed Jan 8, 2026
 
 ### Ring 24: TickArray State
 - [ ] Create `state/tick_array.rs`

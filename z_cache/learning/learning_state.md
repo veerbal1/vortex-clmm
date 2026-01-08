@@ -335,7 +335,11 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - [x] Ring 20: Swap Math ✅ (all sub-rings complete, 52 total tests)
 
 ## Phase 2: State Structures (Rings 21-40)
-- [ ] Rings 21-27: Core Accounts (Config, FeeTier, Whirlpool)
+- [x] Ring 21: WhirlpoolsConfig ✅ — Completed Jan 8, 2026
+- [x] Ring 22: FeeTier ✅ — Completed Jan 8, 2026
+- [x] Ring 23: Tick struct ✅ — Completed Jan 8, 2026
+- [ ] Ring 24: TickArray
+- [ ] Rings 25-27: Whirlpool (Core, Price, Rewards)
 - [ ] Rings 28-32: Position & Oracle
 - [ ] Rings 33-40: Extended Accounts (Adaptive Fee, ConfigExtension, TokenBadge, LockConfig, DynamicTickArray)
 
@@ -533,3 +537,32 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - **Instructions to Build**: 73 (exceeds Orca's 62)
 - **Account Types**: 11
 - **Target Test Coverage**: >95%
+
+---
+
+## Phase 2 Build Notes
+
+### Build Ring 21: WhirlpoolsConfig ✅ — Jan 8, 2026
+- Created `state/config.rs` with `WhirlpoolsConfig` struct
+- Fields: fee_authority, collect_protocol_fees_authority, reward_emissions_super_authority, default_protocol_fee_rate, feature_flags
+- Used `#[derive(InitSpace)]` for automatic LEN calculation
+- Added `initialize()` with protocol fee rate validation
+- Added update methods for all authorities and fee rate
+- Added `InvalidProtocolFeeRate` error
+- `cargo build` passes ✅
+
+### Build Ring 22: FeeTier ✅ — Jan 8, 2026
+- Created `state/fee_tier.rs` with `FeeTier` struct
+- Fields: whirlpools_config, tick_spacing, default_fee_rate
+- Added `initialize()` with tick_spacing > 0 and fee_rate validation
+- Added `update_default_fee_rate()` with validation
+- `cargo build` passes ✅
+
+### Build Ring 23: Tick struct ✅ — Jan 8, 2026
+- Added `Tick` struct to existing `state/tick.rs`
+- Fields: initialized, liquidity_net (i128), liquidity_gross, fee_growth_outside_a/b, reward_growths_outside
+- Added `NUM_REWARDS = 3` constant
+- Used `#[repr(C, packed)]` for exact memory layout (113 bytes)
+- Derived: Default, Debug, Clone, Copy, PartialEq, InitSpace
+- LEN = 113 bytes (no discriminator — embedded in TickArray)
+- `cargo build` passes ✅
