@@ -124,3 +124,126 @@ pub fn compute_swap_step(
         fee_amount: Q64_64::from_encoded(fee_amount),
     })
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_apply_swap_fee() {
+        // 0.3% fee (3000 out of 1_000_000)
+        let amount = Q64_64::from_raw(10000);
+        let result = apply_swap_fee(amount, 3000).unwrap();
+
+        // 10000 * (1_000_000 - 3000) / 1_000_000 = 10000 * 0.997 = 9970
+        println!("Apply fee result: {}", result.to_u64());
+        assert!(result.to_u64() == 9970);
+    }
+
+    #[test]
+    fn test_apply_swap_fee_zero() {
+        let amount = Q64_64::from_raw(10000);
+        let result = apply_swap_fee(amount, 0).unwrap();
+
+        // No fee = same amount
+        assert_eq!(result.to_u64(), 10000);
+    }
+
+    #[test]
+    fn test_reverse_apply_swap_fee() {
+        // Reverse of 0.3% fee
+        let amount = Q64_64::from_raw(9970);
+        let result = reverse_apply_swap_fee(amount, 3000).unwrap();
+
+        // Should get back ~10000
+        println!("Reverse fee result: {}", result.to_u64());
+        assert!(result.to_u64() >= 9999 && result.to_u64() <= 10001);
+    }
+
+    #[test]
+    fn test_compute_swap_step_within_tick() {
+        // Small swap that stays within tick
+        let sqrt_price_current = Q64_64::from_raw(100);
+        let sqrt_price_target = Q64_64::from_raw(90);
+        let liquidity = Q64_64::from_raw(10000);
+        let amount_remaining = Q64_64::from_raw(10); // Small amount
+        let fee_rate = 30; // 0.3%
+        let a_to_b = true;
+
+        let result = compute_swap_step(
+            sqrt_price_current,
+            sqrt_price_target,
+            liquidity,
+            amount_remaining,
+            fee_rate,
+            a_to_b,
+        )
+        .unwrap();
+
+        println!("Swap step result:");
+        println!("  sqrt_price_next: {}", result.sqrt_price_next.inner());
+        println!("  amount_in: {}", result.amount_in.inner());
+        println!("  amount_out: {}", result.amount_out.inner());
+        println!("  fee_amount: {}", result.fee_amount.inner());
+
+        // Basic sanity checks
+        assert!(result.amount_in.inner() > 0);
+        assert!(result.fee_amount.inner() > 0);
+    }
+
+    #[test]
+    fn test_compute_swap_step_a_to_b() {
+        // Selling Token A for Token B
+        let sqrt_price_current = Q64_64::from_raw(10);
+        let sqrt_price_target = Q64_64::from_raw(8);
+        let liquidity = Q64_64::from_raw(1000);
+        let amount_remaining = Q64_64::from_raw(100);
+        let fee_rate = 30;
+        let a_to_b = true;
+
+        let result = compute_swap_step(
+            sqrt_price_current,
+            sqrt_price_target,
+            liquidity,
+            amount_remaining,
+            fee_rate,
+            a_to_b,
+        )
+        .unwrap();
+
+        println!("A->B swap:");
+        println!("  amount_in: {}", result.amount_in.to_u64());
+        println!("  amount_out: {}", result.amount_out.to_u64());
+
+        assert!(result.amount_in.inner() > 0);
+        assert!(result.amount_out.inner() > 0);
+    }
+
+    #[test]
+    fn test_compute_swap_step_b_to_a() {
+        // Selling Token B for Token A
+        let sqrt_price_current = Q64_64::from_raw(8);
+        let sqrt_price_target = Q64_64::from_raw(10);
+        let liquidity = Q64_64::from_raw(1000);
+        let amount_remaining = Q64_64::from_raw(100);
+        let fee_rate = 30;
+        let a_to_b = false;
+
+        let result = compute_swap_step(
+            sqrt_price_current,
+            sqrt_price_target,
+            liquidity,
+            amount_remaining,
+            fee_rate,
+            a_to_b,
+        )
+        .unwrap();
+
+        println!("B->A swap:");
+        println!("  amount_in: {}", result.amount_in.to_u64());
+        println!("  amount_out: {}", result.amount_out.to_u64());
+
+        assert!(result.amount_in.inner() > 0);
+        assert!(result.amount_out.inner() > 0);
+    }
+}
