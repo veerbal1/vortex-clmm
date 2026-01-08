@@ -193,11 +193,27 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - **Deliverable**: Compile-time type safety (improvement over Orca's plain u128 approach) ✅
 
 ### Ring 20: Swap Math - Core Step
-- [ ] Create `math/swap_math.rs`
-- [ ] Implement `compute_swap_step(sqrt_price_current: u128, sqrt_price_target: u128, liquidity: u128, amount_remaining: u64, fee_rate: u16) -> SwapStepResult`
-- [ ] Return: `sqrt_price_next`, `amount_in`, `amount_out`, `fee_amount`
-- [ ] Handle both exact_input and exact_output
-- [ ] Unit tests with known swap scenarios
+- [x] Create `math/swap_math.rs`
+- [x] Define `SwapStepResult` struct with Q64_64 types
+- [ ] **Ring 20a**: `get_next_sqrt_price_from_a()` in `token_math.rs`
+  - Input: sqrt_price, liquidity, amount_a, add (bool)
+  - Formula: `new_price = price × L / (L + amount × price)`
+  - Note: `add=true` when adding A (price down), `add=false` when removing A (price up)
+- [ ] **Ring 20b**: `get_next_sqrt_price_from_b()` in `token_math.rs`
+  - Input: sqrt_price, liquidity, amount_b, add (bool)
+  - Formula: `new_price = price ± (amount / L)`
+- [ ] **Ring 20c**: Fee helper functions in `swap_math.rs`
+  - `apply_swap_fee(amount, fee_rate)` → amount after fee
+  - `reverse_apply_swap_fee(amount, fee_rate)` → pre-fee amount
+- [ ] **Ring 20d**: Complete `compute_swap_step()` function
+  - Step 1: Calculate fee (using 20c)
+  - Step 2: Amount after fee
+  - Step 3: Calculate max swap in tick (using get_amount_delta)
+  - Step 4: Check if reaches boundary
+  - Step 5: Calculate sqrt_price_next (using 20a/20b)
+  - Step 6: Calculate amount_in, amount_out
+  - Step 7: Return SwapStepResult
+- [ ] **Ring 20e**: Unit tests with known swap scenarios
 - **Deliverable**: Single swap step calculation
 
 ---
