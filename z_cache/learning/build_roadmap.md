@@ -213,8 +213,9 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
   - Step 5: Calculate sqrt_price_next (using 20a/20b)
   - Step 6: Calculate amount_in, amount_out
   - Step 7: Return SwapStepResult
-- [ ] **Ring 20e**: Unit tests with known swap scenarios
-- **Deliverable**: Single swap step calculation
+- [x] **Ring 20e**: Unit tests with known swap scenarios ✅
+  - 6 tests: fee helpers + compute_swap_step (a_to_b, b_to_a, within_tick)
+- **Deliverable**: Single swap step calculation ✅
 
 ---
 

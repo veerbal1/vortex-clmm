@@ -332,7 +332,7 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - [x] Ring 16: Liquidity Math ✅
 - [x] Rings 17-18: Token Math (Amount A & B) ✅
 - [x] Ring 19: Token Math (Liquidity from Amounts) ✅
-- [/] Ring 20: Swap Math (20a-d complete, 20e tests pending)
+- [x] Ring 20: Swap Math ✅ (all sub-rings complete, 52 total tests)
 
 ## Phase 2: State Structures (Rings 21-40)
 - [ ] Rings 21-27: Core Accounts (Config, FeeTier, Whirlpool)
@@ -520,9 +520,10 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
   - Step 5: Calculate new sqrt_price (using 20a/20b)
   - Step 6: Calculate amount_in and amount_out
   - Step 7: Return SwapStepResult
-- 46 existing tests still pass ✅
-- **⚠️ NEEDS REVIEW**: `compute_swap_step()` function not fully understood yet — will study later
-- **Next**: Ring 20e (unit tests for compute_swap_step)
+- 52 total tests pass ✅
+- **Ring 20e tests added**: 6 tests for swap_math (fee helpers + compute_swap_step)
+- User reviewed `compute_swap_step()` at overview level ✅
+- **PHASE 1 COMPLETE!** → Next: Phase 2 (State Structures)
 
 ---
 
