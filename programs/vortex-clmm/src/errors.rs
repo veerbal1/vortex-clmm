@@ -34,4 +34,7 @@ pub enum VortexError {
 
     #[msg("Invalid protocol fee rate")]
     InvalidProtocolFeeRate,
+
+    #[msg("Tick array index out of bounds")]
+    TickArrayIndexOutOfBounds,
 }
