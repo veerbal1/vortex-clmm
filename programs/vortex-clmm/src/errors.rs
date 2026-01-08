@@ -31,4 +31,7 @@ pub enum VortexError {
 
     #[msg("Invalid fee rate")]
     InvalidFeeRate,
+
+    #[msg("Invalid protocol fee rate")]
+    InvalidProtocolFeeRate,
 }
