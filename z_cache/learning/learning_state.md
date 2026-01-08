@@ -338,8 +338,9 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - [x] Ring 21: WhirlpoolsConfig ✅ — Completed Jan 8, 2026
 - [x] Ring 22: FeeTier ✅ — Completed Jan 8, 2026
 - [x] Ring 23: Tick struct ✅ — Completed Jan 8, 2026
-- [ ] Ring 24: TickArray
-- [ ] Rings 25-27: Whirlpool (Core, Price, Rewards)
+- [x] Ring 24: TickArray ✅ — Completed Jan 8, 2026
+- [/] Ring 25: Whirlpool (Core) — In Progress
+- [ ] Rings 26-27: Whirlpool (Price, Rewards)
 - [ ] Rings 28-32: Position & Oracle
 - [ ] Rings 33-40: Extended Accounts (Adaptive Fee, ConfigExtension, TokenBadge, LockConfig, DynamicTickArray)
 
@@ -565,4 +566,14 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - Used `#[repr(C, packed)]` for exact memory layout (113 bytes)
 - Derived: Default, Debug, Clone, Copy, PartialEq, InitSpace
 - LEN = 113 bytes (no discriminator — embedded in TickArray)
+- `cargo build` passes ✅
+
+### Build Ring 24: TickArray ✅ — Jan 8, 2026
+- Created `state/tick_array.rs` with `TickArray` struct
+- Used `#[account(zero_copy(unsafe))]` for efficient large account handling (~10KB)
+- Fields: whirlpool (Pubkey), start_tick_index (i32), ticks [Tick; 88]
+- Added `TICK_ARRAY_SIZE = 88` constant
+- Implemented `get_tick()` and `get_tick_mut()` with bounds checking
+- Implemented `tick_index_to_array_index()` with full bounds validation
+- Added `TickArrayIndexOutOfBounds` error
 - `cargo build` passes ✅
