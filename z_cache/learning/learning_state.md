@@ -332,7 +332,7 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - [x] Ring 16: Liquidity Math ✅
 - [x] Rings 17-18: Token Math (Amount A & B) ✅
 - [x] Ring 19: Token Math (Liquidity from Amounts) ✅
-- [ ] Ring 20: Swap Math ← NEXT
+- [/] Ring 20: Swap Math (20a-d complete, 20e tests pending)
 
 ## Phase 2: State Structures (Rings 21-40)
 - [ ] Rings 21-27: Core Accounts (Config, FeeTier, Whirlpool)
@@ -503,6 +503,26 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - **Improvement over Orca**: Orca uses plain `u128` — we use newtype for compiler-enforced safety
 - Prevents accidental mixing of scaled/unscaled values at compile time
 - All 6 tests still pass ✅
+
+### Ring 20: Swap Math ✅ — Completed Jan 8, 2025
+- **20a**: `get_next_sqrt_price_from_a()` — calculates new price after swapping Token A
+  - Formula: `√P_next = √P × L / (L ± amount × √P)`
+- **20b**: `get_next_sqrt_price_from_b()` — calculates new price after swapping Token B
+  - Formula: `√P_next = √P ± (amount / L)`
+- **20c**: Fee helpers in `swap_math.rs`
+  - `apply_swap_fee()`: amount × (1M - fee_rate) / 1M
+  - `reverse_apply_swap_fee()`: inverse calculation
+- **20d**: `compute_swap_step()` — THE CORE FUNCTION
+  - Step 1: Calculate fee from input amount
+  - Step 2: Calculate amount after fee
+  - Step 3: Check max swap possible in current tick
+  - Step 4: Determine if swap reaches tick boundary
+  - Step 5: Calculate new sqrt_price (using 20a/20b)
+  - Step 6: Calculate amount_in and amount_out
+  - Step 7: Return SwapStepResult
+- 46 existing tests still pass ✅
+- **⚠️ NEEDS REVIEW**: `compute_swap_step()` function not fully understood yet — will study later
+- **Next**: Ring 20e (unit tests for compute_swap_step)
 
 ---
 

@@ -195,17 +195,17 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 ### Ring 20: Swap Math - Core Step
 - [x] Create `math/swap_math.rs`
 - [x] Define `SwapStepResult` struct with Q64_64 types
-- [ ] **Ring 20a**: `get_next_sqrt_price_from_a()` in `token_math.rs`
+- [x] **Ring 20a**: `get_next_sqrt_price_from_a()` in `token_math.rs` ✅
   - Input: sqrt_price, liquidity, amount_a, add (bool)
   - Formula: `new_price = price × L / (L + amount × price)`
   - Note: `add=true` when adding A (price down), `add=false` when removing A (price up)
-- [ ] **Ring 20b**: `get_next_sqrt_price_from_b()` in `token_math.rs`
+- [x] **Ring 20b**: `get_next_sqrt_price_from_b()` in `token_math.rs` ✅
   - Input: sqrt_price, liquidity, amount_b, add (bool)
   - Formula: `new_price = price ± (amount / L)`
-- [ ] **Ring 20c**: Fee helper functions in `swap_math.rs`
+- [x] **Ring 20c**: Fee helper functions in `swap_math.rs` ✅
   - `apply_swap_fee(amount, fee_rate)` → amount after fee
   - `reverse_apply_swap_fee(amount, fee_rate)` → pre-fee amount
-- [ ] **Ring 20d**: Complete `compute_swap_step()` function
+- [x] **Ring 20d**: Complete `compute_swap_step()` function ✅
   - Step 1: Calculate fee (using 20c)
   - Step 2: Amount after fee
   - Step 3: Calculate max swap in tick (using get_amount_delta)
