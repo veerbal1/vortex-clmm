@@ -91,6 +91,81 @@ pub fn get_liquidity_for_amounts(
     Ok(Q64_64::from_encoded(result))
 }
 
+/// Adding Token A (price goes DOWN):
+/// √P_next = √P × L / (L + amount × √P)
+///
+/// Removing Token A (price goes UP):
+/// √P_next = √P × L / (L - amount × √P)
+pub fn get_next_sqrt_price_from_a(
+    sqrt_price: Q64_64,
+    liquidity: Q64_64,
+    amount: Q64_64,
+    specified_input: bool,
+) -> Result<Q64_64, VortexError> {
+    if amount.inner() == 0 {
+        return Ok(sqrt_price);
+    }
+
+    let num = q64_64::mul(sqrt_price.inner(), liquidity.inner());
+    let base = q64_64::mul(amount.inner(), sqrt_price.inner());
+
+    let den: u128 = if specified_input {
+        let result = liquidity
+            .inner()
+            .checked_add(base)
+            .ok_or(VortexError::LiquidityOverflow)?;
+        result
+    } else {
+        let result = liquidity
+            .inner()
+            .checked_sub(base)
+            .ok_or(VortexError::LiquidityOverflow)?;
+        result
+    };
+
+    let result = q64_64::div_round_up(num, den);
+    Ok(Q64_64::from_encoded(result))
+}
+
+/// Adding Token B (price goes UP):
+/// √P_next = √P + (amount / L)
+///
+/// Removing Token B (price goes DOWN):
+/// √P_next = √P - (amount / L)
+pub fn get_next_sqrt_price_from_b(
+    sqrt_price: Q64_64,
+    liquidity: Q64_64,
+    amount: Q64_64,
+    specified_input: bool,
+) -> Result<Q64_64, VortexError> {
+    if amount.inner() == 0 {
+        return Ok(sqrt_price);
+    }
+
+    // delta = amount / L
+    // Round DOWN when adding (user gets less), round UP when removing (user pays more)
+    let delta = if specified_input {
+        q64_64::div(amount.inner(), liquidity.inner())
+    } else {
+        q64_64::div_round_up(amount.inner(), liquidity.inner())
+    };
+
+    let result = if specified_input {
+        // Adding B → price goes UP
+        sqrt_price
+            .inner()
+            .checked_add(delta)
+            .ok_or(VortexError::LiquidityOverflow)?
+    } else {
+        // Removing B → price goes DOWN
+        sqrt_price
+            .inner()
+            .checked_sub(delta)
+            .ok_or(VortexError::LiquidityUnderflow)?
+    };
+    Ok(Q64_64::from_encoded(result))
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
