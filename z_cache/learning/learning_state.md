@@ -3,7 +3,7 @@
 ## Current Position
 - **Mode**: 🔨 BUILD MODE
 - **Learning Status**: COMPLETE (All 23 rings, 111 concepts)
-- **Build Status**: Ring 19 of 200 — COMPLETE
+- **Build Status**: Ring 27 of 200 — COMPLETE
 
 ## Build Reference
 - **Roadmap**: `/z_cache/learning/build_roadmap.md`
@@ -339,8 +339,8 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - [x] Ring 22: FeeTier ✅ — Completed Jan 8, 2026
 - [x] Ring 23: Tick struct ✅ — Completed Jan 8, 2026
 - [x] Ring 24: TickArray ✅ — Completed Jan 8, 2026
-- [/] Ring 25: Whirlpool (Core) — In Progress
-- [ ] Rings 26-27: Whirlpool (Price, Rewards)
+- [x] Ring 25: Whirlpool (Core) ✅ — Completed Jan 8, 2026
+- [x] Rings 26-27: Whirlpool (Price, Rewards) ✅ — Completed Jan 8, 2026
 - [ ] Rings 28-32: Position & Oracle
 - [ ] Rings 33-40: Extended Accounts (Adaptive Fee, ConfigExtension, TokenBadge, LockConfig, DynamicTickArray)
 
@@ -576,4 +576,15 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - Implemented `get_tick()` and `get_tick_mut()` with bounds checking
 - Implemented `tick_index_to_array_index()` with full bounds validation
 - Added `TickArrayIndexOutOfBounds` error
+- `cargo build` passes ✅
+
+### Build Rings 25-27: Whirlpool ✅ — Jan 8, 2026
+- Created `state/whirlpool.rs` with complete `Whirlpool` struct
+- **Ring 25 (Core)**: whirlpools_config, whirlpool_bump, tick_spacing, fee_rate, protocol_fee_rate, token_mint_a/b, token_vault_a/b
+- **Ring 26 (Price/Fees)**: sqrt_price, tick_current_index, liquidity, fee_growth_global_a/b, protocol_fee_owed_a/b
+- **Ring 27 (Rewards)**: reward_last_updated_timestamp, reward_infos array
+- Created `WhirlpoolRewardInfo` struct (mint, vault, authority, emissions_per_second_x64, growth_global_x64)
+- Added `NUM_REWARDS = 3` constant
+- Used simple `u8` for bump (simpler than Orca's `[u8; 1]` approach)
+- Removed `fee_tier_index_seed` for simplicity (AdaptiveFeeTiers deferred)
 - `cargo build` passes ✅

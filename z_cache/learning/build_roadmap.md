@@ -256,28 +256,28 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Implement `tick_index_to_array_index()` with full bounds validation
 - **Deliverable**: Tick array account structure ✅ — Completed Jan 8, 2026
 
-### Ring 25: Whirlpool State - Core Fields
-- [ ] Create `state/whirlpool.rs`
-- [ ] Define `Whirlpool` struct - Part 1
-- [ ] Fields: `whirlpools_config`, `bump`, `tick_spacing`, `tick_spacing_seed` (for PDA)
-- [ ] Fields: `token_mint_a`, `token_mint_b`, `token_vault_a`, `token_vault_b`
-- [ ] Fields: `fee_rate`, `protocol_fee_rate`
-- **Deliverable**: Whirlpool core identity fields
+### Ring 25: Whirlpool State - Core Fields ✅
+- [x] Create `state/whirlpool.rs`
+- [x] Define `Whirlpool` struct - Part 1
+- [x] Fields: `whirlpools_config`, `bump`, `tick_spacing`
+- [x] Fields: `token_mint_a`, `token_mint_b`, `token_vault_a`, `token_vault_b`
+- [x] Fields: `fee_rate`, `protocol_fee_rate`
+- **Deliverable**: Whirlpool core identity fields ✅ — Completed Jan 8, 2026
 
-### Ring 26: Whirlpool State - Price Fields
-- [ ] Add to `Whirlpool`: `sqrt_price` (u128), `tick_current_index` (i32)
-- [ ] Add: `liquidity` (u128) - active liquidity at current price
-- [ ] Add: `fee_growth_global_a` (u128), `fee_growth_global_b` (u128)
-- [ ] Add: `protocol_fee_owed_a` (u64), `protocol_fee_owed_b` (u64)
-- **Deliverable**: Whirlpool price/fee state
+### Ring 26: Whirlpool State - Price Fields ✅
+- [x] Add to `Whirlpool`: `sqrt_price` (u128), `tick_current_index` (i32)
+- [x] Add: `liquidity` (u128) - active liquidity at current price
+- [x] Add: `fee_growth_global_a` (u128), `fee_growth_global_b` (u128)
+- [x] Add: `protocol_fee_owed_a` (u64), `protocol_fee_owed_b` (u64)
+- **Deliverable**: Whirlpool price/fee state ✅ — Completed Jan 8, 2026
 
-### Ring 27: Whirlpool State - Rewards
-- [ ] Define `WhirlpoolRewardInfo` struct
-- [ ] Fields: `mint`, `vault`, `authority`, `emissions_per_second_x64`, `growth_global_x64`
-- [ ] Add to `Whirlpool`: `reward_infos: [WhirlpoolRewardInfo; 3]`
-- [ ] Add: `reward_last_updated_timestamp`
-- [ ] Calculate final `Whirlpool::LEN`
-- **Deliverable**: Complete Whirlpool state
+### Ring 27: Whirlpool State - Rewards ✅
+- [x] Define `WhirlpoolRewardInfo` struct
+- [x] Fields: `mint`, `vault`, `authority`, `emissions_per_second_x64`, `growth_global_x64`
+- [x] Add to `Whirlpool`: `reward_infos: [WhirlpoolRewardInfo; 3]`
+- [x] Add: `reward_last_updated_timestamp`
+- [x] Calculate final `Whirlpool::LEN`
+- **Deliverable**: Complete Whirlpool state ✅ — Completed Jan 8, 2026
 
 ### Ring 28: Position State - Core
 - [ ] Create `state/position.rs`
