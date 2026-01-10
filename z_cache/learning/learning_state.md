@@ -342,7 +342,8 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - [x] Ring 25: Whirlpool (Core) ✅ — Completed Jan 8, 2026
 - [x] Rings 26-27: Whirlpool (Price, Rewards) ✅ — Completed Jan 8, 2026
 - [x] Rings 28-30: Position ✅ — Completed Jan 10, 2026
-- [ ] Rings 31-32: Position Bundle & Oracle
+- [~] Ring 31: Position Bundle — SKIPPED (advanced feature, deferred)
+- [ ] Ring 32: Oracle (with Adaptive Fees) — aligned with Orca's LP protection tech
 - [ ] Rings 33-40: Extended Accounts (Adaptive Fee, ConfigExtension, TokenBadge, LockConfig, DynamicTickArray)
 
 ## Phase 3: Manager Layer (Rings 41-55)
