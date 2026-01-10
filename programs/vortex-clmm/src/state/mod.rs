@@ -4,3 +4,4 @@ pub mod tick;
 pub mod tick_array;
 pub mod whirlpool;
 pub mod position;
+pub mod oracle;
