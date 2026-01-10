@@ -219,7 +219,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 2: STATE STRUCTURES (Rings 21-35)
+## PHASE 2: STATE STRUCTURES (Rings 21-39)
 
 > Define every account. Memory layout matters.
 
@@ -323,7 +323,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Implement `LEN`, validation methods
 - **Deliverable**: Oracle with adaptive fee support ✅ — Completed Jan 10, 2026
 
-### Ring 34: Config Extension State
+### Ring 33: Config Extension State
 - [ ] Create `state/config_extension.rs`
 - [ ] Define `WhirlpoolsConfigExtension` struct (LEN: 608 bytes)
 - [ ] Fields: `whirlpools_config`, `config_extension_authority`, `token_badge_authority`
@@ -332,7 +332,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Add `seeds` for PDA
 - **Deliverable**: Config extension for Token-2022 features
 
-### Ring 35: Token Badge State
+### Ring 34: Token Badge State
 - [ ] Create `state/token_badge.rs`
 - [ ] Define `TokenBadge` struct (LEN: 200 bytes)
 - [ ] Fields: `whirlpools_config`, `token_mint`
@@ -342,7 +342,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Add `seeds` for PDA (config + token_mint)
 - **Deliverable**: Token access control badge
 
-### Ring 36: Lock Config State
+### Ring 35: Lock Config State
 - [ ] Create `state/lock_config.rs`
 - [ ] Define `LockConfig` struct (LEN: 201 bytes)
 - [ ] Fields: `position`, `position_owner`, `whirlpool`
@@ -352,7 +352,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Implement `DISCRIMINATOR`, `LEN`
 - **Deliverable**: Position lock configuration
 
-### Ring 37: Dynamic Tick Array State
+### Ring 36: Dynamic Tick Array State
 - [ ] Create `state/dynamic_tick_array.rs`
 - [ ] Define `DynamicTickArray` struct (variable size)
 - [ ] Fields: `whirlpool`, `start_tick_index`
@@ -361,7 +361,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Implement `get_tick()`, `get_tick_mut()`, `insert_tick()`
 - **Deliverable**: Space-efficient tick storage
 
-### Ring 38: Feature Flags
+### Ring 37: Feature Flags
 - [ ] Create `state/feature_flags.rs`
 - [ ] Define `ConfigFeatureFlags` bitflags struct
 - [ ] Flags: `TOKEN_BADGE` (bit 0)
@@ -369,13 +369,13 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Add to `WhirlpoolsConfig`: `feature_flags` field
 - **Deliverable**: Feature toggle system
 
-### Ring 39: State Module Exports
+### Ring 38: State Module Exports
 - [ ] Create `state/mod.rs`
 - [ ] Export all state structs
 - [ ] Add state validation helpers
 - **Deliverable**: Clean state module
 
-### Ring 35: State Serialization Tests
+### Ring 39: State Serialization Tests
 - [ ] Write tests verifying `LEN` constants match actual serialized size
 - [ ] Test PDA derivation for all accounts
 - [ ] Test default values
@@ -383,18 +383,18 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 3: MANAGER LAYER (Rings 36-50)
+## PHASE 3: MANAGER LAYER (Rings 40-54)
 
 > Business logic. Managers orchestrate operations across state.
 
-### Ring 36: Tick Manager - Initialization
+### Ring 40: Tick Manager - Initialization
 - [ ] Create `manager/tick_manager.rs`
 - [ ] Implement `initialize_tick(tick: &mut Tick)`
 - [ ] Implement `deinitialize_tick(tick: &mut Tick) -> bool` (returns if actually deinitialized)
 - [ ] Unit tests
 - **Deliverable**: Tick lifecycle management
 
-### Ring 37: Tick Manager - Update
+### Ring 41: Tick Manager - Update
 - [ ] Implement `update_tick(tick: &mut Tick, liquidity_delta: i128, is_upper: bool) -> Result<bool>`
 - [ ] Update `liquidity_net` (add if lower, subtract if upper)
 - [ ] Update `liquidity_gross`
@@ -402,7 +402,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit tests
 - **Deliverable**: Tick liquidity updates
 
-### Ring 38: Tick Manager - Crossing
+### Ring 42: Tick Manager - Crossing
 - [ ] Implement `cross_tick(tick: &mut Tick, fee_growth_global_a: u128, fee_growth_global_b: u128, reward_growths_global: &[u128; 3]) -> i128`
 - [ ] Flip `fee_growth_outside` values
 - [ ] Flip `reward_growths_outside` values
@@ -410,20 +410,20 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit tests
 - **Deliverable**: Tick crossing logic
 
-### Ring 39: Tick Manager - Fee Growth
+### Ring 43: Tick Manager - Fee Growth
 - [ ] Implement `get_fee_growth_inside(tick_lower: &Tick, tick_upper: &Tick, tick_current: i32, fee_growth_global_a: u128, fee_growth_global_b: u128) -> (u128, u128)`
 - [ ] Handle three cases: current below, inside, above range
 - [ ] Wrapping subtraction for accumulators
 - [ ] Unit tests with various scenarios
 - **Deliverable**: Fee growth calculation
 
-### Ring 40: Tick Manager - Reward Growth
+### Ring 44: Tick Manager - Reward Growth
 - [ ] Implement `get_reward_growth_inside(tick_lower: &Tick, tick_upper: &Tick, tick_current: i32, reward_growths_global: &[u128; 3]) -> [u128; 3]`
 - [ ] Same logic as fees, for each reward
 - [ ] Unit tests
 - **Deliverable**: Reward growth calculation
 
-### Ring 41: Position Manager - Fee Calculation
+### Ring 45: Position Manager - Fee Calculation
 - [ ] Create `manager/position_manager.rs`
 - [ ] Implement `calculate_fee_owed(position: &Position, fee_growth_inside_a: u128, fee_growth_inside_b: u128) -> (u64, u64)`
 - [ ] Formula: `(growth_inside - checkpoint) * liquidity`
@@ -431,7 +431,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit tests
 - **Deliverable**: Position fee calculation
 
-### Ring 42: Position Manager - Fee Update
+### Ring 46: Position Manager - Fee Update
 - [ ] Implement `update_position_fees(position: &mut Position, fee_growth_inside_a: u128, fee_growth_inside_b: u128)`
 - [ ] Calculate owed amounts
 - [ ] Add to `fee_owed_a/b`
@@ -439,19 +439,19 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit tests
 - **Deliverable**: Position fee updates
 
-### Ring 43: Position Manager - Reward Calculation
+### Ring 47: Position Manager - Reward Calculation
 - [ ] Implement `calculate_reward_owed(position: &Position, reward_index: usize, reward_growth_inside: u128) -> u64`
 - [ ] Same pattern as fees
 - [ ] Unit tests
 - **Deliverable**: Position reward calculation
 
-### Ring 44: Position Manager - Reward Update
+### Ring 48: Position Manager - Reward Update
 - [ ] Implement `update_position_rewards(position: &mut Position, reward_growths_inside: &[u128; 3])`
 - [ ] Update all three reward checkpoints and owed amounts
 - [ ] Unit tests
 - **Deliverable**: Position reward updates
 
-### Ring 45: Liquidity Manager - Add
+### Ring 49: Liquidity Manager - Add
 - [ ] Create `manager/liquidity_manager.rs`
 - [ ] Implement `add_liquidity(whirlpool: &mut Whirlpool, position: &mut Position, tick_lower: &mut Tick, tick_upper: &mut Tick, liquidity_delta: u128) -> Result<(u64, u64)>`
 - [ ] Update position liquidity
@@ -461,21 +461,21 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit tests
 - **Deliverable**: Add liquidity orchestration
 
-### Ring 46: Liquidity Manager - Remove
+### Ring 50: Liquidity Manager - Remove
 - [ ] Implement `remove_liquidity(whirlpool: &mut Whirlpool, position: &mut Position, tick_lower: &mut Tick, tick_upper: &mut Tick, liquidity_delta: u128) -> Result<(u64, u64)>`
 - [ ] Reverse of add
 - [ ] Return withdrawn token amounts
 - [ ] Unit tests
 - **Deliverable**: Remove liquidity orchestration
 
-### Ring 47: Swap Manager - Core Loop Setup
+### Ring 51: Swap Manager - Core Loop Setup
 - [ ] Create `manager/swap_manager.rs`
 - [ ] Define `SwapState` struct: `amount_remaining`, `amount_calculated`, `sqrt_price`, `tick`, `liquidity`, `fee_growth_global`, `protocol_fee`
 - [ ] Define `SwapResult` struct
 - [ ] Implement `initialize_swap_state(whirlpool: &Whirlpool, amount: u64, sqrt_price_limit: u128, a_to_b: bool) -> SwapState`
 - **Deliverable**: Swap state management
 
-### Ring 48: Swap Manager - Step Execution
+### Ring 52: Swap Manager - Step Execution
 - [ ] Implement `execute_swap_step(state: &mut SwapState, tick_array: &TickArray, a_to_b: bool) -> Result<bool>`
 - [ ] Find next initialized tick
 - [ ] Calculate swap step using swap_math
@@ -484,14 +484,14 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit tests
 - **Deliverable**: Single swap step execution
 
-### Ring 49: Swap Manager - Tick Crossing
+### Ring 53: Swap Manager - Tick Crossing
 - [ ] Implement `handle_tick_crossing(state: &mut SwapState, tick: &mut Tick, ...) -> Result<()>`
 - [ ] Cross tick and update liquidity
 - [ ] Update fee growth outside
 - [ ] Unit tests
 - **Deliverable**: Tick crossing during swap
 
-### Ring 50: Swap Manager - Full Swap
+### Ring 54: Swap Manager - Full Swap
 - [ ] Implement `execute_swap(whirlpool: &mut Whirlpool, tick_arrays: &mut [TickArray], amount: u64, sqrt_price_limit: u128, a_to_b: bool, ...) -> Result<SwapResult>`
 - [ ] Loop through swap steps
 - [ ] Handle tick array transitions
@@ -502,11 +502,11 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 4: CORE INSTRUCTIONS (Rings 51-75)
+## PHASE 4: CORE INSTRUCTIONS (Rings 55-79)
 
 > The instruction layer. What users actually call.
 
-### Ring 51: Initialize Config Instruction
+### Ring 55: Initialize Config Instruction
 - [ ] Create `instructions/initialize_config.rs`
 - [ ] Define `InitializeConfig` accounts struct
 - [ ] Implement instruction handler
@@ -515,7 +515,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Config initialization
 
-### Ring 52: Initialize Fee Tier Instruction
+### Ring 56: Initialize Fee Tier Instruction
 - [ ] Create `instructions/initialize_fee_tier.rs`
 - [ ] Define accounts: config, fee_tier, funder, system_program
 - [ ] Validate tick_spacing (must be > 0, reasonable max)
@@ -524,7 +524,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Fee tier initialization
 
-### Ring 53: Initialize Pool Instruction
+### Ring 57: Initialize Pool Instruction
 - [ ] Create `instructions/initialize_pool.rs`
 - [ ] Define accounts: config, fee_tier, whirlpool, token_mint_a, token_mint_b, token_vault_a, token_vault_b, funder
 - [ ] Validate token ordering (mint_a < mint_b lexicographically)
@@ -534,7 +534,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Pool initialization
 
-### Ring 54: Initialize Tick Array Instruction
+### Ring 58: Initialize Tick Array Instruction
 - [ ] Create `instructions/initialize_tick_array.rs`
 - [ ] Define accounts: whirlpool, tick_array, funder
 - [ ] Validate start_tick_index alignment
@@ -543,7 +543,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Tick array initialization
 
-### Ring 55: Open Position Instruction (Setup)
+### Ring 59: Open Position Instruction (Setup)
 - [ ] Create `instructions/open_position.rs`
 - [ ] Define accounts: whirlpool, position, position_mint, position_token_account, owner, funder
 - [ ] Validate tick_lower < tick_upper
@@ -551,7 +551,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Validate ticks within bounds
 - **Deliverable**: Position validation
 
-### Ring 56: Open Position Instruction (Execution)
+### Ring 60: Open Position Instruction (Execution)
 - [ ] Create position NFT mint
 - [ ] Create position token account
 - [ ] Mint 1 NFT to owner
@@ -560,14 +560,14 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Position creation
 
-### Ring 57: Increase Liquidity Instruction (Setup)
+### Ring 61: Increase Liquidity Instruction (Setup)
 - [ ] Create `instructions/increase_liquidity.rs`
 - [ ] Define accounts: whirlpool, position, position_authority, tick_array_lower, tick_array_upper, token_vault_a, token_vault_b, token_owner_account_a, token_owner_account_b
 - [ ] Validate position ownership
 - [ ] Validate tick arrays contain position bounds
 - **Deliverable**: Increase liquidity validation
 
-### Ring 58: Increase Liquidity Instruction (Execution)
+### Ring 62: Increase Liquidity Instruction (Execution)
 - [ ] Calculate required token amounts
 - [ ] Transfer tokens from user to vaults
 - [ ] Update position liquidity
@@ -577,7 +577,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Liquidity addition
 
-### Ring 59: Decrease Liquidity Instruction
+### Ring 63: Decrease Liquidity Instruction
 - [ ] Create `instructions/decrease_liquidity.rs`
 - [ ] Same account structure as increase
 - [ ] Validate sufficient liquidity in position
@@ -587,7 +587,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Liquidity removal
 
-### Ring 60: Update Fees and Rewards Instruction
+### Ring 64: Update Fees and Rewards Instruction
 - [ ] Create `instructions/update_fees_and_rewards.rs`
 - [ ] Define accounts: whirlpool, position, tick_array_lower, tick_array_upper
 - [ ] Calculate fee growth inside range
@@ -597,7 +597,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Fee/reward calculation
 
-### Ring 61: Collect Fees Instruction
+### Ring 65: Collect Fees Instruction
 - [ ] Create `instructions/collect_fees.rs`
 - [ ] Define accounts: whirlpool, position, position_authority, token_vault_a, token_vault_b, token_owner_account_a, token_owner_account_b
 - [ ] Validate ownership
@@ -606,7 +606,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Fee collection
 
-### Ring 62: Collect Reward Instruction
+### Ring 66: Collect Reward Instruction
 - [ ] Create `instructions/collect_reward.rs`
 - [ ] Define accounts: whirlpool, position, position_authority, reward_vault, token_owner_account, reward_index
 - [ ] Validate reward index (0-2)
@@ -615,7 +615,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Reward collection
 
-### Ring 63: Close Position Instruction
+### Ring 67: Close Position Instruction
 - [ ] Create `instructions/close_position.rs`
 - [ ] Validate liquidity = 0
 - [ ] Validate fee_owed_a = 0, fee_owed_b = 0
@@ -626,14 +626,14 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Position closure
 
-### Ring 64: Swap Instruction (Setup)
+### Ring 68: Swap Instruction (Setup)
 - [ ] Create `instructions/swap.rs`
 - [ ] Define accounts: whirlpool, token_vault_a, token_vault_b, token_owner_account_a, token_owner_account_b, tick_array_0, tick_array_1, tick_array_2, oracle (optional)
 - [ ] Define params: amount, other_amount_threshold, sqrt_price_limit, amount_specified_is_input, a_to_b
 - [ ] Validate sqrt_price_limit direction
 - **Deliverable**: Swap validation
 
-### Ring 65: Swap Instruction (Execution)
+### Ring 69: Swap Instruction (Execution)
 - [ ] Execute swap using swap_manager
 - [ ] Update pool sqrt_price, tick_current_index, liquidity
 - [ ] Update fee_growth_global
@@ -643,7 +643,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Core swap execution
 
-### Ring 66: Two Hop Swap Instruction
+### Ring 70: Two Hop Swap Instruction
 - [ ] Create `instructions/two_hop_swap.rs`
 - [ ] Define accounts for two pools
 - [ ] Execute first swap
@@ -652,7 +652,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Multi-hop routing
 
-### Ring 67: Collect Protocol Fees Instruction
+### Ring 71: Collect Protocol Fees Instruction
 - [ ] Create `instructions/collect_protocol_fees.rs`
 - [ ] Validate caller is collect_protocol_fees_authority
 - [ ] Transfer protocol_fee_owed_a/b to authority
@@ -660,7 +660,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Protocol fee collection
 
-### Ring 68: Set Fee Rate Instruction
+### Ring 72: Set Fee Rate Instruction
 - [ ] Create `instructions/set_fee_rate.rs`
 - [ ] Validate caller is fee_authority
 - [ ] Validate new rate within bounds
@@ -668,7 +668,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Fee adjustment
 
-### Ring 69: Set Protocol Fee Rate Instruction
+### Ring 73: Set Protocol Fee Rate Instruction
 - [ ] Create `instructions/set_protocol_fee_rate.rs`
 - [ ] Validate caller is fee_authority
 - [ ] Validate rate within MAX_PROTOCOL_FEE_RATE
@@ -676,7 +676,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Protocol fee adjustment
 
-### Ring 70: Set Reward Emissions Instruction
+### Ring 74: Set Reward Emissions Instruction
 - [ ] Create `instructions/set_reward_emissions.rs`
 - [ ] Validate caller is reward_authority
 - [ ] Validate reward index
@@ -686,7 +686,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Reward emission control
 
-### Ring 71: Initialize Reward Instruction
+### Ring 75: Initialize Reward Instruction
 - [ ] Create `instructions/initialize_reward.rs`
 - [ ] Validate reward slot not already initialized
 - [ ] Create reward vault
@@ -694,27 +694,27 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Reward program setup
 
-### Ring 72: Set Reward Authority Instruction
+### Ring 76: Set Reward Authority Instruction
 - [ ] Create `instructions/set_reward_authority.rs`
 - [ ] Validate caller is current authority
 - [ ] Transfer authority to new address
 - [ ] Unit test
 - **Deliverable**: Reward authority transfer
 
-### Ring 73: Set Fee Authority Instruction
+### Ring 77: Set Fee Authority Instruction
 - [ ] Create `instructions/set_fee_authority.rs`
 - [ ] Validate caller is current fee_authority
 - [ ] Transfer to new address
 - [ ] Unit test
 - **Deliverable**: Fee authority transfer
 
-### Ring 74: Set Collect Protocol Fees Authority
+### Ring 78: Set Collect Protocol Fees Authority
 - [ ] Create `instructions/set_collect_protocol_fees_authority.rs`
 - [ ] Same pattern
 - [ ] Unit test
 - **Deliverable**: Protocol fees authority transfer
 
-### Ring 75: Instruction Module Exports
+### Ring 79: Instruction Module Exports
 - [ ] Create `instructions/mod.rs`
 - [ ] Export all instructions
 - [ ] Create `lib.rs` program entrypoint with all handlers
@@ -723,16 +723,16 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 5: ADVANCED FEATURES (Rings 76-90)
+## PHASE 5: ADVANCED FEATURES (Rings 80-95)
 
-### Ring 76: Position Bundle - Open Bundle
+### Ring 80: Position Bundle - Open Bundle
 - [ ] Create `instructions/open_position_bundle.rs`
 - [ ] Create bundle NFT
 - [ ] Initialize bitmap to all zeros
 - [ ] Unit test
 - **Deliverable**: Bundle creation
 
-### Ring 77: Position Bundle - Open Bundled Position
+### Ring 81: Position Bundle - Open Bundled Position
 - [ ] Create `instructions/open_bundled_position.rs`
 - [ ] Find first empty slot in bitmap
 - [ ] Create position linked to bundle
@@ -740,7 +740,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Bundled position creation
 
-### Ring 78: Position Bundle - Close Bundled Position
+### Ring 82: Position Bundle - Close Bundled Position
 - [ ] Create `instructions/close_bundled_position.rs`
 - [ ] Validate position empty
 - [ ] Clear bitmap slot
@@ -748,7 +748,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Bundled position closure
 
-### Ring 79: Position Bundle - Close Bundle
+### Ring 83: Position Bundle - Close Bundle
 - [ ] Create `instructions/close_position_bundle.rs`
 - [ ] Validate all slots empty (bitmap = 0)
 - [ ] Burn bundle NFT
@@ -756,14 +756,14 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Bundle closure
 
-### Ring 80: Oracle - Initialize
+### Ring 84: Oracle - Initialize
 - [ ] Create `instructions/initialize_oracle.rs`
 - [ ] Allocate observation array
 - [ ] Initialize first observation with current tick
 - [ ] Unit test
 - **Deliverable**: Oracle initialization
 
-### Ring 81: Oracle - Update Logic
+### Ring 85: Oracle - Update Logic
 - [ ] Create `manager/oracle_manager.rs`
 - [ ] Implement `update_oracle(oracle: &mut Oracle, tick: i32, timestamp: i64)`
 - [ ] Calculate tick_cumulative delta
@@ -772,7 +772,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Oracle update logic
 
-### Ring 82: Oracle - Read TWAP
+### Ring 86: Oracle - Read TWAP
 - [ ] Implement `get_twap(oracle: &Oracle, seconds_ago: u32) -> i32`
 - [ ] Find relevant observations
 - [ ] Calculate time-weighted average tick
@@ -780,20 +780,20 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: TWAP calculation
 
-### Ring 83: Oracle - Integration with Swap
+### Ring 87: Oracle - Integration with Swap
 - [ ] Modify swap instruction to update oracle
 - [ ] Update after price change
 - [ ] Integration test
 - **Deliverable**: Oracle in swap flow
 
-### Ring 84: Adaptive Fee - Initialize
+### Ring 88: Adaptive Fee - Initialize
 - [ ] Create `instructions/initialize_adaptive_fee_tier.rs`
 - [ ] Set all parameters
 - [ ] Link to fee_tier
 - [ ] Unit test
 - **Deliverable**: Adaptive fee setup
 
-### Ring 85: Adaptive Fee - Volatility Update
+### Ring 89: Adaptive Fee - Volatility Update
 - [ ] Create `manager/adaptive_fee_manager.rs`
 - [ ] Implement `update_volatility(state: &mut AdaptiveFeeTier, ticks_crossed: u32, timestamp: i64)`
 - [ ] Accumulate volatility
@@ -801,34 +801,34 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Volatility tracking
 
-### Ring 86: Adaptive Fee - Current Fee Calculation
+### Ring 90: Adaptive Fee - Current Fee Calculation
 - [ ] Implement `get_current_fee_rate(state: &AdaptiveFeeTier) -> u16`
 - [ ] Apply formula: base + (accumulator * factor)
 - [ ] Cap at max_fee_rate
 - [ ] Unit test
 - **Deliverable**: Dynamic fee calculation
 
-### Ring 87: Adaptive Fee - Integration with Swap
+### Ring 91: Adaptive Fee - Integration with Swap
 - [ ] Modify swap to use adaptive fee when configured
 - [ ] Update volatility accumulator after swap
 - [ ] Integration test
 - **Deliverable**: Adaptive fees in swap
 
-### Ring 88: Position Lock - Lock Position
+### Ring 92: Position Lock - Lock Position
 - [ ] Create `instructions/lock_position.rs`
 - [ ] Set lock_release_time on position
 - [ ] Add lock_release_time field to Position struct
 - [ ] Unit test
 - **Deliverable**: Position locking
 
-### Ring 89: Position Lock - Validation in Decrease/Close
+### Ring 93: Position Lock - Validation in Decrease/Close
 - [ ] Modify decrease_liquidity to check lock
 - [ ] Modify close_position to check lock
 - [ ] Allow only if current_time >= lock_release_time
 - [ ] Integration test
 - **Deliverable**: Lock enforcement
 
-### Ring 90: Reset Position Range
+### Ring 94: Reset Position Range
 - [ ] Create `instructions/reset_position_range.rs`
 - [ ] Validate position unlocked
 - [ ] Validate liquidity = 0
@@ -837,7 +837,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Position range reset
 
-### Ring 91: Transfer Locked Position
+### Ring 95: Transfer Locked Position
 - [ ] Create `instructions/transfer_locked_position.rs`
 - [ ] Allow transfer of locked positions
 - [ ] Update position_owner in LockConfig
@@ -847,11 +847,11 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 6: TOKEN-2022 SUPPORT (Rings 92-110)
+## PHASE 6: TOKEN-2022 SUPPORT (Rings 96-109)
 
 > Full Token Extensions support - critical for modern tokens
 
-### Ring 92: Token-2022 Utility Module
+### Ring 96: Token-2022 Utility Module
 - [ ] Create `util/token_2022.rs`
 - [ ] Implement `is_token_2022(mint: &AccountInfo) -> bool`
 - [ ] Implement `get_token_program_id(mint: &AccountInfo) -> Pubkey`
@@ -859,7 +859,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Handle transfer fees detection
 - **Deliverable**: Token-2022 detection utilities
 
-### Ring 93: Remaining Accounts Handler
+### Ring 97: Remaining Accounts Handler
 - [ ] Create `util/remaining_accounts.rs`
 - [ ] Define `RemainingAccountsInfo` struct
 - [ ] Implement parsing of remaining accounts for transfer hooks
@@ -867,7 +867,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit tests
 - **Deliverable**: Dynamic account handling
 
-### Ring 94: Transfer with Hook Support
+### Ring 98: Transfer with Hook Support
 - [ ] Create `util/transfer.rs`
 - [ ] Implement `transfer_from_owner_to_vault()` with hook support
 - [ ] Implement `transfer_from_vault_to_owner()` with hook support
@@ -876,7 +876,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit tests
 - **Deliverable**: Universal transfer utility
 
-### Ring 95: Initialize Pool V2
+### Ring 99: Initialize Pool V2
 - [ ] Create `instructions/v2/initialize_pool_v2.rs`
 - [ ] Support Token-2022 token mints
 - [ ] Handle token extensions detection
@@ -884,7 +884,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Pool init with Token-2022
 
-### Ring 96: Increase Liquidity V2
+### Ring 100: Increase Liquidity V2
 - [ ] Create `instructions/v2/increase_liquidity_v2.rs`
 - [ ] Support remaining accounts for transfer hooks
 - [ ] Handle transfer fees on deposit
@@ -892,14 +892,14 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Add liquidity with Token-2022
 
-### Ring 97: Decrease Liquidity V2
+### Ring 101: Decrease Liquidity V2
 - [ ] Create `instructions/v2/decrease_liquidity_v2.rs`
 - [ ] Support remaining accounts for transfer hooks
 - [ ] Handle transfer fees on withdrawal
 - [ ] Unit test
 - **Deliverable**: Remove liquidity with Token-2022
 
-### Ring 98: Swap V2
+### Ring 102: Swap V2
 - [ ] Create `instructions/v2/swap_v2.rs`
 - [ ] Support Token-2022 for both tokens
 - [ ] Handle transfer hooks on both sides
@@ -908,7 +908,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Swap with Token-2022
 
-### Ring 99: Two Hop Swap V2
+### Ring 103: Two Hop Swap V2
 - [ ] Create `instructions/v2/two_hop_swap_v2.rs`
 - [ ] Handle three tokens (A, intermediate, B)
 - [ ] Support Token-2022 for all three
@@ -916,40 +916,40 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Multi-hop with Token-2022
 
-### Ring 100: Collect Fees V2
+### Ring 104: Collect Fees V2
 - [ ] Create `instructions/v2/collect_fees_v2.rs`
 - [ ] Support Token-2022 vaults
 - [ ] Handle transfer fees on collection
 - [ ] Unit test
 - **Deliverable**: Fee collection with Token-2022
 
-### Ring 101: Collect Protocol Fees V2
+### Ring 105: Collect Protocol Fees V2
 - [ ] Create `instructions/v2/collect_protocol_fees_v2.rs`
 - [ ] Support Token-2022 vaults
 - [ ] Unit test
 - **Deliverable**: Protocol fees with Token-2022
 
-### Ring 102: Collect Reward V2
+### Ring 106: Collect Reward V2
 - [ ] Create `instructions/v2/collect_reward_v2.rs`
 - [ ] Support Token-2022 reward tokens
 - [ ] Handle transfer hooks
 - [ ] Unit test
 - **Deliverable**: Reward collection with Token-2022
 
-### Ring 103: Initialize Reward V2
+### Ring 107: Initialize Reward V2
 - [ ] Create `instructions/v2/initialize_reward_v2.rs`
 - [ ] Support Token-2022 reward mints
 - [ ] Create vault with correct program
 - [ ] Unit test
 - **Deliverable**: Reward setup with Token-2022
 
-### Ring 104: Set Reward Emissions V2
+### Ring 108: Set Reward Emissions V2
 - [ ] Create `instructions/v2/set_reward_emissions_v2.rs`
 - [ ] Handle Token-2022 reward tokens
 - [ ] Unit test
 - **Deliverable**: Emissions with Token-2022
 
-### Ring 105: V2 Module Exports
+### Ring 109: V2 Module Exports
 - [ ] Create `instructions/v2/mod.rs`
 - [ ] Export all V2 instructions
 - [ ] Add to main program
@@ -958,74 +958,74 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 7: TOKEN BADGE SYSTEM (Rings 106-115)
+## PHASE 7: TOKEN BADGE SYSTEM (Rings 110-119)
 
 > Access control for tokens - restrict which tokens can be used
 
-### Ring 106: Initialize Config Extension
+### Ring 110: Initialize Config Extension
 - [ ] Create `instructions/initialize_config_extension.rs`
 - [ ] Create ConfigExtension PDA
 - [ ] Set initial authorities
 - [ ] Unit test
 - **Deliverable**: Config extension initialization
 
-### Ring 107: Set Config Extension Authority
+### Ring 111: Set Config Extension Authority
 - [ ] Create `instructions/set_config_extension_authority.rs`
 - [ ] Validate current authority
 - [ ] Transfer to new authority
 - [ ] Unit test
 - **Deliverable**: Extension authority transfer
 
-### Ring 108: Set Token Badge Authority
+### Ring 112: Set Token Badge Authority
 - [ ] Create `instructions/set_token_badge_authority.rs`
 - [ ] Validate current authority
 - [ ] Transfer badge authority
 - [ ] Unit test
 - **Deliverable**: Badge authority transfer
 
-### Ring 109: Initialize Token Badge
+### Ring 113: Initialize Token Badge
 - [ ] Create `instructions/initialize_token_badge.rs`
 - [ ] Create TokenBadge PDA for token mint
 - [ ] Set initial attributes (non-transferable position)
 - [ ] Unit test
 - **Deliverable**: Token badge creation
 
-### Ring 110: Delete Token Badge
+### Ring 114: Delete Token Badge
 - [ ] Create `instructions/delete_token_badge.rs`
 - [ ] Validate authority
 - [ ] Close badge account, return rent
 - [ ] Unit test
 - **Deliverable**: Token badge removal
 
-### Ring 111: Set Token Badge Attribute
+### Ring 115: Set Token Badge Attribute
 - [ ] Create `instructions/set_token_badge_attribute.rs`
 - [ ] Update `require_non_transferable_position`
 - [ ] Future: add more attributes
 - [ ] Unit test
 - **Deliverable**: Badge attribute updates
 
-### Ring 112: Token Badge Validation in Pool Init
+### Ring 116: Token Badge Validation in Pool Init
 - [ ] Modify `initialize_pool` to check token badges
 - [ ] Check feature flag is enabled
 - [ ] Enforce badge requirements
 - [ ] Integration test
 - **Deliverable**: Badge enforcement in pools
 
-### Ring 113: Token Badge Validation in Position Open
+### Ring 117: Token Badge Validation in Position Open
 - [ ] Modify `open_position` to check badge
 - [ ] Enforce non-transferable if required
 - [ ] Open position with token extensions
 - [ ] Integration test
 - **Deliverable**: Badge enforcement in positions
 
-### Ring 114: Set Config Feature Flag
+### Ring 118: Set Config Feature Flag
 - [ ] Create `instructions/set_config_feature_flag.rs`
 - [ ] Enable/disable TOKEN_BADGE feature
 - [ ] Validate authority
 - [ ] Unit test
 - **Deliverable**: Feature flag control
 
-### Ring 115: Token Badge Integration Tests
+### Ring 119: Token Badge Integration Tests
 - [ ] Test full badge lifecycle
 - [ ] Test badge with pool creation
 - [ ] Test non-transferable positions
@@ -1034,17 +1034,17 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 8: METADATA SUPPORT (Rings 116-122)
+## PHASE 8: METADATA SUPPORT (Rings 120-126)
 
 > Metaplex metadata for positions - human-readable NFTs
 
-### Ring 116: Metaplex Integration Setup
+### Ring 120: Metaplex Integration Setup
 - [ ] Add `anchor-spl` metadata feature
 - [ ] Create `util/metadata.rs`
 - [ ] Define metadata constants (name, symbol, URI patterns)
 - **Deliverable**: Metadata utilities
 
-### Ring 117: Open Position With Metadata
+### Ring 121: Open Position With Metadata
 - [ ] Create `instructions/open_position_with_metadata.rs`
 - [ ] Create position mint
 - [ ] Create Metaplex metadata account
@@ -1053,14 +1053,14 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Position with Metaplex metadata
 
-### Ring 118: Initialize Position Bundle With Metadata
+### Ring 122: Initialize Position Bundle With Metadata
 - [ ] Create `instructions/initialize_position_bundle_with_metadata.rs`
 - [ ] Create bundle mint
 - [ ] Create Metaplex metadata
 - [ ] Unit test
 - **Deliverable**: Bundle with metadata
 
-### Ring 119: Open Position With Token Extensions
+### Ring 123: Open Position With Token Extensions
 - [ ] Create `instructions/open_position_with_token_extensions.rs`
 - [ ] Use Token-2022 for position mint
 - [ ] Add metadata extension (not Metaplex)
@@ -1068,7 +1068,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Position with Token-2022 metadata
 
-### Ring 120: Close Position With Token Extensions
+### Ring 124: Close Position With Token Extensions
 - [ ] Create `instructions/close_position_with_token_extensions.rs`
 - [ ] Handle Token-2022 position NFT
 - [ ] Burn with correct program
@@ -1076,13 +1076,13 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Token-2022 position closure
 
-### Ring 121: Position Bumps Struct
+### Ring 125: Position Bumps Struct
 - [ ] Create `OpenPositionBumps` struct
 - [ ] Fields: `position_bump`, `metadata_bump` (optional)
 - [ ] Use in position creation
 - **Deliverable**: Clean bump handling
 
-### Ring 122: Metadata Integration Tests
+### Ring 126: Metadata Integration Tests
 - [ ] Test position with Metaplex metadata
 - [ ] Test position with Token-2022 metadata
 - [ ] Test bundle with metadata
@@ -1091,11 +1091,11 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 9: ADAPTIVE FEE INSTRUCTIONS (Rings 123-132)
+## PHASE 9: ADAPTIVE FEE INSTRUCTIONS (Rings 127-136)
 
 > Dynamic fees that respond to market volatility
 
-### Ring 123: Initialize Adaptive Fee Tier
+### Ring 127: Initialize Adaptive Fee Tier
 - [ ] Create `instructions/initialize_adaptive_fee_tier.rs`
 - [ ] Set all volatility parameters
 - [ ] Link to base fee tier
@@ -1103,27 +1103,27 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Adaptive tier creation
 
-### Ring 124: Set Default Base Fee Rate
+### Ring 128: Set Default Base Fee Rate
 - [ ] Create `instructions/set_default_base_fee_rate.rs`
 - [ ] Update AdaptiveFeeTier base rate
 - [ ] Validate bounds
 - [ ] Unit test
 - **Deliverable**: Base fee updates
 
-### Ring 125: Set Delegated Fee Authority
+### Ring 129: Set Delegated Fee Authority
 - [ ] Create `instructions/set_delegated_fee_authority.rs`
 - [ ] Allow delegation of fee setting
 - [ ] Validate current authority
 - [ ] Unit test
 - **Deliverable**: Fee delegation
 
-### Ring 126: Set Initialize Pool Authority
+### Ring 130: Set Initialize Pool Authority
 - [ ] Create `instructions/set_initialize_pool_authority.rs`
 - [ ] Control who can create pools with this tier
 - [ ] Unit test
 - **Deliverable**: Pool creation control
 
-### Ring 127: Set Preset Adaptive Fee Constants
+### Ring 131: Set Preset Adaptive Fee Constants
 - [ ] Create `instructions/set_preset_adaptive_fee_constants.rs`
 - [ ] Update: filter_period, decay_period, reduction_factor
 - [ ] Update: adaptive_fee_control_factor, max_volatility_accumulator
@@ -1132,21 +1132,21 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit test
 - **Deliverable**: Volatility parameter updates
 
-### Ring 128: Initialize Pool With Adaptive Fee
+### Ring 132: Initialize Pool With Adaptive Fee
 - [ ] Create `instructions/initialize_pool_with_adaptive_fee.rs`
 - [ ] Use AdaptiveFeeTier instead of FeeTier
 - [ ] Initialize volatility accumulator to 0
 - [ ] Unit test
 - **Deliverable**: Adaptive fee pool creation
 
-### Ring 129: Set Fee Rate By Delegated Authority
+### Ring 133: Set Fee Rate By Delegated Authority
 - [ ] Create `instructions/set_fee_rate_by_delegated_fee_authority.rs`
 - [ ] Allow delegated authority to set fees
 - [ ] Validate delegation
 - [ ] Unit test
 - **Deliverable**: Delegated fee setting
 
-### Ring 130: Adaptive Fee Manager
+### Ring 134: Adaptive Fee Manager
 - [ ] Create `manager/adaptive_fee_manager.rs`
 - [ ] Implement volatility accumulation
 - [ ] Implement decay calculation
@@ -1155,7 +1155,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Unit tests
 - **Deliverable**: Adaptive fee logic
 
-### Ring 131: Integrate Adaptive Fees in Swap
+### Ring 135: Integrate Adaptive Fees in Swap
 - [ ] Modify swap to detect adaptive fee pools
 - [ ] Calculate current fee from accumulator
 - [ ] Update volatility after swap
@@ -1163,7 +1163,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [ ] Integration test
 - **Deliverable**: Adaptive fees in swaps
 
-### Ring 132: Adaptive Fee Integration Tests
+### Ring 136: Adaptive Fee Integration Tests
 - [ ] Test fee increases with volatility
 - [ ] Test fee decay over time
 - [ ] Test major swap threshold
@@ -1172,57 +1172,57 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 10: ADDITIONAL AUTHORITY INSTRUCTIONS (Rings 133-140)
+## PHASE 10: ADDITIONAL AUTHORITY INSTRUCTIONS (Rings 137-144)
 
-### Ring 133: Set Reward Authority By Super Authority
+### Ring 137: Set Reward Authority By Super Authority
 - [ ] Create `instructions/set_reward_authority_by_super_authority.rs`
 - [ ] Allow super authority to override reward authority
 - [ ] Validate super authority
 - [ ] Unit test
 - **Deliverable**: Super authority override
 
-### Ring 134: Set Reward Emissions Super Authority
+### Ring 138: Set Reward Emissions Super Authority
 - [ ] Create `instructions/set_reward_emissions_super_authority.rs`
 - [ ] Transfer super authority
 - [ ] Validate current super authority
 - [ ] Unit test
 - **Deliverable**: Super authority transfer
 
-### Ring 135: Set Default Fee Rate (Fee Tier)
+### Ring 139: Set Default Fee Rate (Fee Tier)
 - [ ] Create `instructions/set_default_fee_rate.rs`
 - [ ] Update fee tier's default rate
 - [ ] Validate fee authority
 - [ ] Unit test
 - **Deliverable**: Fee tier default update
 
-### Ring 136: Set Default Protocol Fee Rate
+### Ring 140: Set Default Protocol Fee Rate
 - [ ] Create `instructions/set_default_protocol_fee_rate.rs`
 - [ ] Update config's default protocol fee
 - [ ] Validate authority
 - [ ] Unit test
 - **Deliverable**: Default protocol fee update
 
-### Ring 137: Dynamic Tick Array Initialize
+### Ring 141: Dynamic Tick Array Initialize
 - [ ] Create `instructions/initialize_dynamic_tick_array.rs`
 - [ ] Support idempotent flag (don't fail if exists)
 - [ ] Variable size allocation
 - [ ] Unit test
 - **Deliverable**: Dynamic tick array creation
 
-### Ring 138: Migration Instruction (Repurpose Reward Authority Space)
+### Ring 142: Migration Instruction (Repurpose Reward Authority Space)
 - [ ] Create `instructions/migrate_repurpose_reward_authority_space.rs`
 - [ ] One-time migration helper
 - [ ] Handle legacy account format
 - [ ] Unit test
 - **Deliverable**: Migration support
 
-### Ring 139: IDL Include (For Complete IDL)
+### Ring 143: IDL Include (For Complete IDL)
 - [ ] Create `instructions/idl_include.rs`
 - [ ] Include all types in IDL
 - [ ] Ensure complete type coverage
 - **Deliverable**: Complete IDL generation
 
-### Ring 140: Authority Instruction Module
+### Ring 144: Authority Instruction Module
 - [ ] Create `instructions/authority/mod.rs`
 - [ ] Organize all authority instructions
 - [ ] Clean exports
@@ -1230,76 +1230,76 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 11: SECURITY HARDENING (Rings 141-152)
+## PHASE 11: SECURITY HARDENING (Rings 145-156)
 
-### Ring 141: Overflow Protection Audit
+### Ring 145: Overflow Protection Audit
 - [ ] Audit all arithmetic operations
 - [ ] Ensure checked_add/checked_sub/checked_mul used
 - [ ] Add overflow tests
 - **Deliverable**: Overflow safety verified
 
-### Ring 142: Access Control Audit
+### Ring 146: Access Control Audit
 - [ ] Audit all authority checks
 - [ ] Verify signer requirements
 - [ ] Test unauthorized access attempts
 - **Deliverable**: Access control verified
 
-### Ring 143: Account Validation
+### Ring 147: Account Validation
 - [ ] Verify all account constraints
 - [ ] Check PDA derivations
 - [ ] Ensure proper owner checks
 - [ ] Test with malicious accounts
 - **Deliverable**: Account safety verified
 
-### Ring 144: Price Manipulation Protection
+### Ring 148: Price Manipulation Protection
 - [ ] Verify sqrt_price_limit enforced
 - [ ] Test sandwich attack scenarios
 - [ ] Document slippage recommendations
 - **Deliverable**: Price manipulation mitigated
 
-### Ring 145: Reentrancy Protection
+### Ring 149: Reentrancy Protection
 - [ ] Audit for reentrancy vectors
 - [ ] Ensure state updates before external calls
 - [ ] Use checks-effects-interactions pattern
 - **Deliverable**: Reentrancy safe
 
-### Ring 146: Integer Precision Audit
+### Ring 150: Integer Precision Audit
 - [ ] Verify rounding direction (favor protocol)
 - [ ] Test edge cases at min/max values
 - [ ] Ensure no precision loss in critical paths
 - **Deliverable**: Precision verified
 
-### Ring 147: Token Account Validation
+### Ring 151: Token Account Validation
 - [ ] Verify token program checks
 - [ ] Validate mint matches expected
 - [ ] Check for token extensions compatibility
 - **Deliverable**: Token safety verified
 
-### Ring 148: Signer Validation
+### Ring 152: Signer Validation
 - [ ] Audit all is_signer checks
 - [ ] Ensure proper authority hierarchy
 - [ ] Test with incorrect signers
 - **Deliverable**: Signer safety verified
 
-### Ring 149: Rent Exemption
+### Ring 153: Rent Exemption
 - [ ] Verify all accounts rent-exempt
 - [ ] Test account closure returns rent
 - [ ] Check minimum lamports requirements
 - **Deliverable**: Rent handling verified
 
-### Ring 150: CPI Safety Audit
+### Ring 154: CPI Safety Audit
 - [ ] Verify all CPI targets are correct programs
 - [ ] Check for CPI privilege escalation
 - [ ] Validate account ownership after CPI
 - **Deliverable**: CPI safety verified
 
-### Ring 151: Token-2022 Security Audit
+### Ring 155: Token-2022 Security Audit
 - [ ] Audit transfer hook handling
 - [ ] Verify transfer fee calculations
 - [ ] Test with malicious extensions
 - **Deliverable**: Token-2022 safety verified
 
-### Ring 152: Security Test Suite
+### Ring 156: Security Test Suite
 - [ ] Create comprehensive security test file
 - [ ] Test all edge cases
 - [ ] Test all attack vectors
@@ -1308,63 +1308,63 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 12: OPTIMIZATION (Rings 153-162)
+## PHASE 12: OPTIMIZATION (Rings 157-166)
 
-### Ring 153: Compute Unit Profiling
+### Ring 157: Compute Unit Profiling
 - [ ] Profile each instruction's CU usage
 - [ ] Identify hotspots
 - [ ] Document baseline metrics
 - **Deliverable**: CU baseline established
 
-### Ring 154: Math Optimization
+### Ring 158: Math Optimization
 - [ ] Optimize hot paths in math modules
 - [ ] Use lookup tables where beneficial
 - [ ] Benchmark improvements
 - **Deliverable**: Math optimized
 
-### Ring 155: Account Size Optimization
+### Ring 159: Account Size Optimization
 - [ ] Review all struct sizes
 - [ ] Pack fields efficiently
 - [ ] Minimize rent costs
 - **Deliverable**: Account sizes minimized
 
-### Ring 156: Swap Loop Optimization
+### Ring 160: Swap Loop Optimization
 - [ ] Optimize tick crossing loop
 - [ ] Minimize redundant calculations
 - [ ] Cache values where possible
 - **Deliverable**: Swap optimized
 
-### Ring 157: Serialization Optimization
+### Ring 161: Serialization Optimization
 - [ ] Use zero-copy where beneficial
 - [ ] Minimize borsh overhead
 - [ ] Benchmark improvements
 - **Deliverable**: Serialization optimized
 
-### Ring 158: Memory Optimization
+### Ring 162: Memory Optimization
 - [ ] Audit stack usage
 - [ ] Avoid unnecessary allocations
 - [ ] Use references where possible
 - **Deliverable**: Memory usage optimized
 
-### Ring 159: Cross-Program Invocation Optimization
+### Ring 163: Cross-Program Invocation Optimization
 - [ ] Minimize CPIs
 - [ ] Batch token transfers where possible
 - [ ] Optimize invoke_signed calls
 - **Deliverable**: CPIs optimized
 
-### Ring 160: Bit Math Optimization
+### Ring 164: Bit Math Optimization
 - [ ] Implement MSB (most significant bit) fast path
 - [ ] Optimize tick bitmap operations
 - [ ] Use bitwise operations for bundle bitmap
 - **Deliverable**: Bit operations optimized
 
-### Ring 161: Sparse Swap Optimization
+### Ring 165: Sparse Swap Optimization
 - [ ] Optimize for sparse tick arrays
 - [ ] Skip empty regions efficiently
 - [ ] Reduce iterations on low-liquidity pools
 - **Deliverable**: Sparse swap optimized
 
-### Ring 162: Final Performance Benchmark
+### Ring 166: Final Performance Benchmark
 - [ ] Full benchmark suite
 - [ ] Compare to Orca Whirlpools
 - [ ] Document performance characteristics
@@ -1372,99 +1372,99 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 13: COMPREHENSIVE TESTING (Rings 163-178)
+## PHASE 13: COMPREHENSIVE TESTING (Rings 167-182)
 
-### Ring 163: Unit Test Coverage - Math
+### Ring 167: Unit Test Coverage - Math
 - [ ] 100% coverage on math modules
 - [ ] Edge case tests
 - [ ] Property-based tests for invariants
 - **Deliverable**: Math fully tested
 
-### Ring 164: Unit Test Coverage - Managers
+### Ring 168: Unit Test Coverage - Managers
 - [ ] Full coverage on manager modules
 - [ ] State transition tests
 - [ ] Error condition tests
 - **Deliverable**: Managers fully tested
 
-### Ring 165: Integration Tests - Happy Paths
+### Ring 169: Integration Tests - Happy Paths
 - [ ] Full LP journey test
 - [ ] Swap test with multiple tick crossings
 - [ ] Multi-hop swap test
 - **Deliverable**: Happy paths tested
 
-### Ring 166: Integration Tests - Edge Cases
+### Ring 170: Integration Tests - Edge Cases
 - [ ] Min/max tick positions
 - [ ] Zero liquidity scenarios
 - [ ] Price limit hit scenarios
 - **Deliverable**: Edge cases tested
 
-### Ring 167: Integration Tests - Rewards
+### Ring 171: Integration Tests - Rewards
 - [ ] Reward emission test
 - [ ] Multiple reward programs
 - [ ] Reward collection timing
 - **Deliverable**: Rewards tested
 
-### Ring 168: Integration Tests - Bundles
+### Ring 172: Integration Tests - Bundles
 - [ ] Full bundle lifecycle
 - [ ] Multiple positions in bundle (256 max)
 - [ ] Bundle transfer
 - **Deliverable**: Bundles tested
 
-### Ring 169: Integration Tests - Oracle
+### Ring 173: Integration Tests - Oracle
 - [ ] Oracle update on swaps
 - [ ] TWAP calculation accuracy
 - [ ] Circular buffer behavior
 - **Deliverable**: Oracle tested
 
-### Ring 170: Integration Tests - Adaptive Fees
+### Ring 174: Integration Tests - Adaptive Fees
 - [ ] Volatility accumulation
 - [ ] Decay behavior
 - [ ] Fee bounds
 - **Deliverable**: Adaptive fees tested
 
-### Ring 171: Integration Tests - Token-2022
+### Ring 175: Integration Tests - Token-2022
 - [ ] Pool with Token-2022 tokens
 - [ ] Transfer hooks execution
 - [ ] Transfer fees handling
 - **Deliverable**: Token-2022 tested
 
-### Ring 172: Integration Tests - Token Badge
+### Ring 176: Integration Tests - Token Badge
 - [ ] Badge creation and deletion
 - [ ] Non-transferable positions
 - [ ] Feature flag gating
 - **Deliverable**: Token badge tested
 
-### Ring 173: Integration Tests - Position Locks
+### Ring 177: Integration Tests - Position Locks
 - [ ] Lock creation
 - [ ] Locked position transfers
 - [ ] Unlock and range reset
 - **Deliverable**: Position locks tested
 
-### Ring 174: Integration Tests - Metadata
+### Ring 178: Integration Tests - Metadata
 - [ ] Metaplex metadata positions
 - [ ] Token-2022 metadata positions
 - [ ] Bundle metadata
 - **Deliverable**: Metadata tested
 
-### Ring 175: Fuzz Testing Setup
+### Ring 179: Fuzz Testing Setup
 - [ ] Set up Trident or similar framework
 - [ ] Define fuzz targets
 - [ ] Configure coverage
 - **Deliverable**: Fuzzing infrastructure
 
-### Ring 176: Fuzz Testing - Core Operations
+### Ring 180: Fuzz Testing - Core Operations
 - [ ] Fuzz swap amounts and directions
 - [ ] Fuzz liquidity operations
 - [ ] Fuzz tick indices
 - **Deliverable**: Core fuzzing complete
 
-### Ring 177: Fuzz Testing - Edge Cases
+### Ring 181: Fuzz Testing - Edge Cases
 - [ ] Fuzz near boundary values
 - [ ] Fuzz with adversarial inputs
 - [ ] Run extended campaigns
 - **Deliverable**: Edge case fuzzing complete
 
-### Ring 178: Test Documentation
+### Ring 182: Test Documentation
 - [ ] Document test coverage (target >95%)
 - [ ] Document test methodology
 - [ ] Create test matrix
@@ -1472,147 +1472,147 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 ---
 
-## PHASE 14: PRODUCTION READY (Rings 179-200)
+## PHASE 14: PRODUCTION READY (Rings 183-204)
 
-### Ring 179: Mainnet Configuration
+### Ring 183: Mainnet Configuration
 - [ ] Create mainnet config templates
 - [ ] Define production fee tiers
 - [ ] Set authority addresses
 - **Deliverable**: Mainnet config ready
 
-### Ring 180: Upgrade Authority Strategy
+### Ring 184: Upgrade Authority Strategy
 - [ ] Document upgrade process
 - [ ] Define upgrade authority multisig
 - [ ] Plan for future upgrades
 - [ ] Consider timelock mechanisms
 - **Deliverable**: Upgrade strategy documented
 
-### Ring 181: SDK Foundation
+### Ring 185: SDK Foundation
 - [ ] Create TypeScript SDK project
 - [ ] Set up build tooling (tsup/rollup)
 - [ ] Define core types matching on-chain
 - [ ] Implement account fetchers
 - **Deliverable**: SDK foundation
 
-### Ring 182: SDK - Account Deserialization
+### Ring 186: SDK - Account Deserialization
 - [ ] Implement Whirlpool account parsing
 - [ ] Implement Position account parsing
 - [ ] Implement TickArray parsing
 - [ ] Handle all account types
 - **Deliverable**: Account parsing complete
 
-### Ring 183: SDK - Core Instructions
+### Ring 187: SDK - Core Instructions
 - [ ] Implement pool initialization
 - [ ] Implement position open/close
 - [ ] Implement liquidity add/remove
 - [ ] Implement swap
 - **Deliverable**: Core instruction builders
 
-### Ring 184: SDK - V2 Instructions
+### Ring 188: SDK - V2 Instructions
 - [ ] Implement all V2 (Token-2022) instructions
 - [ ] Handle remaining accounts
 - [ ] Handle transfer hooks
 - **Deliverable**: V2 instruction builders
 
-### Ring 185: SDK - Math Library
+### Ring 189: SDK - Math Library
 - [ ] Port tick math to TypeScript
 - [ ] Port token math
 - [ ] Port swap math
 - [ ] Use BigInt for precision
 - **Deliverable**: SDK math complete
 
-### Ring 186: SDK - Quote Functions
+### Ring 190: SDK - Quote Functions
 - [ ] Implement swap quote
 - [ ] Implement liquidity quote
 - [ ] Implement fee estimation
 - **Deliverable**: Quote functions
 
-### Ring 187: SDK - Position Helpers
+### Ring 191: SDK - Position Helpers
 - [ ] Implement position value calculation
 - [ ] Implement fee accrued calculation
 - [ ] Implement reward accrued calculation
 - **Deliverable**: Position helpers
 
-### Ring 188: SDK - Testing
+### Ring 192: SDK - Testing
 - [ ] Unit tests for all SDK functions
 - [ ] Integration tests against localnet
 - [ ] E2E tests for common flows
 - **Deliverable**: SDK fully tested
 
-### Ring 189: Documentation - Architecture
+### Ring 193: Documentation - Architecture
 - [ ] System architecture overview
 - [ ] Account relationships diagram
 - [ ] Instruction flow diagrams
 - [ ] State machine documentation
 - **Deliverable**: Architecture docs
 
-### Ring 190: Documentation - API Reference
+### Ring 194: Documentation - API Reference
 - [ ] Document all instructions
 - [ ] Document all account structures
 - [ ] Document all error codes
 - [ ] Generate from IDL
 - **Deliverable**: API reference
 
-### Ring 191: Documentation - Integration Guide
+### Ring 195: Documentation - Integration Guide
 - [ ] Quick start guide
 - [ ] Common use cases
 - [ ] Best practices
 - [ ] Troubleshooting guide
 - **Deliverable**: Integration guide
 
-### Ring 192: Documentation - Security Model
+### Ring 196: Documentation - Security Model
 - [ ] Document authority hierarchy
 - [ ] Document access control
 - [ ] Document trust assumptions
 - [ ] Security best practices
 - **Deliverable**: Security documentation
 
-### Ring 193: Deployment - Localnet
+### Ring 197: Deployment - Localnet
 - [ ] Create localnet setup script
 - [ ] Deploy all programs
 - [ ] Initialize test config
 - [ ] Create demo pools
 - **Deliverable**: Localnet deployment
 
-### Ring 194: Deployment - Devnet
+### Ring 198: Deployment - Devnet
 - [ ] Deploy to devnet
 - [ ] Initialize production config
 - [ ] Create test pools
 - [ ] Verify all instructions
 - **Deliverable**: Devnet deployment
 
-### Ring 195: Deployment - Verification
+### Ring 199: Deployment - Verification
 - [ ] Verify program on-chain matches source
 - [ ] Anchor verify
 - [ ] Publish verified IDL
 - **Deliverable**: Verified deployment
 
-### Ring 196: Monitoring Setup
+### Ring 200: Monitoring Setup
 - [ ] Set up pool analytics
 - [ ] Transaction monitoring
 - [ ] Error alerting
 - **Deliverable**: Monitoring infrastructure
 
-### Ring 197: Error Codes Documentation
+### Ring 201: Error Codes Documentation
 - [ ] Document all 67+ error codes
 - [ ] Create error handling guide
 - [ ] Map errors to solutions
 - **Deliverable**: Error documentation
 
-### Ring 198: Performance Documentation
+### Ring 202: Performance Documentation
 - [ ] Document CU usage per instruction
 - [ ] Document account sizes
 - [ ] Compare with Orca benchmarks
 - **Deliverable**: Performance docs
 
-### Ring 199: Final Code Review
+### Ring 203: Final Code Review
 - [ ] Full codebase review
 - [ ] Remove dead code
 - [ ] Final formatting pass
 - [ ] License headers
 - **Deliverable**: Production-ready code
 
-### Ring 200: Launch Checklist
+### Ring 204: Launch Checklist
 - [ ] All tests passing
 - [ ] Documentation complete
 - [ ] SDK published to npm
@@ -1628,7 +1628,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 For $200k+ Protocol Engineer Portfolio:
 
 ### Must Have (Non-negotiable)
-- [ ] All 200 rings completed
+- [ ] All 204 rings completed
 - [ ] Full test coverage (>95%)
 - [ ] Security audit-ready code
 - [ ] All 62+ instructions matching Orca feature parity
@@ -1660,13 +1660,13 @@ For $200k+ Protocol Engineer Portfolio:
 
 | Category | Count | Status |
 |----------|-------|--------|
-| V1 Core | 31 | Rings 51-75 |
-| V1 Extended | 7 | Rings 76-91 |
-| Token-2022 V2 | 11 | Rings 92-105 |
-| Token Badge | 5 | Rings 106-115 |
-| Metadata | 4 | Rings 116-122 |
-| Adaptive Fee | 7 | Rings 123-132 |
-| Additional Authority | 8 | Rings 133-140 |
+| V1 Core | 31 | Rings 55-79 |
+| V1 Extended | 7 | Rings 80-95 |
+| Token-2022 V2 | 11 | Rings 96-109 |
+| Token Badge | 5 | Rings 110-119 |
+| Metadata | 4 | Rings 120-126 |
+| Adaptive Fee | 7 | Rings 127-136 |
+| Additional Authority | 8 | Rings 137-144 |
 | **Total** | **73** | *Exceeds Orca's 62* |
 
 ---
@@ -1681,11 +1681,11 @@ For $200k+ Protocol Engineer Portfolio:
 | FeeTier | 44 bytes | 22 |
 | AdaptiveFeeTier | 286 bytes | 33 |
 | TickArray | 10,040 bytes | 24 |
-| DynamicTickArray | Variable | 37 |
+| DynamicTickArray | Variable | 36 |
 | Position | 216 bytes | 28-30 |
 | PositionBundle | 136 bytes | 31 |
-| LockConfig | 201 bytes | 36 |
-| TokenBadge | 200 bytes | 35 |
+| LockConfig | 201 bytes | 35 |
+| TokenBadge | 200 bytes | 34 |
 
 ---
 
@@ -1716,4 +1716,4 @@ bitflags = "2.8.0"
 
 *Build in public. Document decisions. Ship quality.*
 
-*This roadmap covers 200 rings across 14 phases. Each ring is a single brush stroke. Complete them all, and you'll have a production-grade CLMM that rivals Orca Whirlpools.*
+*This roadmap covers 204 rings across 14 phases. Each ring is a single brush stroke. Complete them all, and you'll have a production-grade CLMM that rivals Orca Whirlpools.*
