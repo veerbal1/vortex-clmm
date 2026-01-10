@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
 
+use crate::constants::NUM_REWARDS;
+
 /// Tick data structure - embedded in TickArray, not a standalone account
 /// Size: 1 + 16 + 16 + 16 + 16 + 48 = 113 bytes
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, Default, InitSpace)]
@@ -14,6 +16,25 @@ pub struct Tick {
 
 impl Tick {
     pub const LEN: usize = Tick::INIT_SPACE;
+
+    pub fn update(&mut self, update: &TickUpdate) {
+        self.initialized = update.initialized;
+        self.liquidity_net = update.liquidity_net;
+        self.liquidity_gross = update.liquidity_gross;
+        self.fee_growth_outside_a = update.fee_growth_outside_a;
+        self.fee_growth_outside_b = update.fee_growth_outside_b;
+        self.reward_growths_outside = update.reward_growths_outside;
+    }
+}
+
+#[derive(Default, Clone, Debug, PartialEq)]
+pub struct TickUpdate {
+    pub initialized: bool,
+    pub liquidity_net: i128,
+    pub liquidity_gross: u128,
+    pub fee_growth_outside_a: u128,
+    pub fee_growth_outside_b: u128,
+    pub reward_growths_outside: [u128; NUM_REWARDS],
 }
 
 /// Check if a tick is valid for the given tick spacing.

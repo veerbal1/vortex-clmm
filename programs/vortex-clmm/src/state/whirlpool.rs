@@ -11,6 +11,18 @@ pub struct WhirlpoolRewardInfo {
     pub growth_global_x64: u128,        // Q64.64 accumulator
 }
 
+impl WhirlpoolRewardInfo {
+    pub fn to_reward_growths(
+        reward_infos: &[WhirlpoolRewardInfo; NUM_REWARDS],
+    ) -> [u128; NUM_REWARDS] {
+        let mut reward_growths = [0u128; NUM_REWARDS];
+        for i in 0..NUM_REWARDS {
+            reward_growths[i] = reward_infos[i].growth_global_x64;
+        }
+        reward_growths
+    }
+}
+
 #[account]
 #[derive(InitSpace)]
 pub struct Whirlpool {
