@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 
-pub const NUM_REWARDS: usize = 3;
+use crate::constants::NUM_REWARDS;
+
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Default, Debug, PartialEq, InitSpace)]
 pub struct WhirlpoolRewardInfo {
     pub mint: Pubkey,                   // Reward token mint

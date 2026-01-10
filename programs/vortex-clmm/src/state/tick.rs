@@ -1,7 +1,5 @@
 use anchor_lang::prelude::*;
 
-pub const NUM_REWARDS: usize = 3;
-
 /// Tick data structure - embedded in TickArray, not a standalone account
 /// Size: 1 + 16 + 16 + 16 + 16 + 48 = 113 bytes
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, Default, InitSpace)]
