@@ -323,51 +323,25 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Implement `LEN`, validation methods
 - **Deliverable**: Oracle with adaptive fee support ✅ — Completed Jan 10, 2026
 
-### Ring 33: Config Extension State
-- [ ] Create `state/config_extension.rs`
-- [ ] Define `WhirlpoolsConfigExtension` struct (LEN: 608 bytes)
-- [ ] Fields: `whirlpools_config`, `config_extension_authority`, `token_badge_authority`
-- [ ] Add 512-byte reserve for future features
-- [ ] Implement `DISCRIMINATOR`, `LEN`
-- [ ] Add `seeds` for PDA
-- **Deliverable**: Config extension for Token-2022 features
+### Ring 33: Config Extension State — SKIPPED (for future)
+- [~] Skipped — Token-2022 advanced feature
+- **Deliverable**: Config extension for Token-2022 features (deferred)
 
-### Ring 34: Token Badge State
-- [ ] Create `state/token_badge.rs`
-- [ ] Define `TokenBadge` struct (LEN: 200 bytes)
-- [ ] Fields: `whirlpools_config`, `token_mint`
-- [ ] Fields: `attribute_require_non_transferable_position` (bool)
-- [ ] Add 127-byte reserve
-- [ ] Implement `DISCRIMINATOR`, `LEN`
-- [ ] Add `seeds` for PDA (config + token_mint)
-- **Deliverable**: Token access control badge
+### Ring 34: Token Badge State — SKIPPED (for future)
+- [~] Skipped — Access control feature, not core CLMM
+- **Deliverable**: Token access control badge (deferred)
 
-### Ring 35: Lock Config State
-- [ ] Create `state/lock_config.rs`
-- [ ] Define `LockConfig` struct (LEN: 201 bytes)
-- [ ] Fields: `position`, `position_owner`, `whirlpool`
-- [ ] Fields: `locked_timestamp` (i64)
-- [ ] Fields: `lock_type` (enum: Permanent)
-- [ ] Add 128-byte reserve
-- [ ] Implement `DISCRIMINATOR`, `LEN`
-- **Deliverable**: Position lock configuration
+### Ring 35: Lock Config State — SKIPPED (for future)
+- [~] Skipped — Position locking, advanced feature
+- **Deliverable**: Position lock configuration (deferred)
 
-### Ring 36: Dynamic Tick Array State
-- [ ] Create `state/dynamic_tick_array.rs`
-- [ ] Define `DynamicTickArray` struct (variable size)
-- [ ] Fields: `whirlpool`, `start_tick_index`
-- [ ] Fields: `initialized_tick_count`, `ticks: Vec<Tick>`
-- [ ] Implement dynamic sizing logic
-- [ ] Implement `get_tick()`, `get_tick_mut()`, `insert_tick()`
-- **Deliverable**: Space-efficient tick storage
+### Ring 36: Dynamic Tick Array State — SKIPPED (for future)
+- [~] Skipped — Optimization, fixed tick arrays work for MVP
+- **Deliverable**: Space-efficient tick storage (deferred)
 
-### Ring 37: Feature Flags
-- [ ] Create `state/feature_flags.rs`
-- [ ] Define `ConfigFeatureFlags` bitflags struct
-- [ ] Flags: `TOKEN_BADGE` (bit 0)
-- [ ] Reserve remaining bits for future features
-- [ ] Add to `WhirlpoolsConfig`: `feature_flags` field
-- **Deliverable**: Feature toggle system
+### Ring 37: Feature Flags — SKIPPED (for future)
+- [~] Skipped — Can add when needed for Token Badge
+- **Deliverable**: Feature toggle system (deferred)
 
 ### Ring 38: State Module Exports
 - [ ] Create `state/mod.rs`
