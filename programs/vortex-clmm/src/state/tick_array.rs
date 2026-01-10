@@ -5,7 +5,7 @@ use anchor_lang::prelude::*;
 pub const TICK_ARRAY_SIZE: usize = 88;
 
 #[account(zero_copy(unsafe))]
-#[repr(C, packed)]
+#[repr(C)]
 #[derive(InitSpace)]
 pub struct TickArray {
     pub whirlpool: Pubkey,

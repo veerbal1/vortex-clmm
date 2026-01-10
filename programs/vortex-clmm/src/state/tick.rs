@@ -2,19 +2,20 @@ use anchor_lang::prelude::*;
 
 pub const NUM_REWARDS: usize = 3;
 
-#[repr(C, packed)]
-#[derive(Default, Debug, Clone, Copy, PartialEq, InitSpace)]
+/// Tick data structure - embedded in TickArray, not a standalone account
+/// Size: 1 + 16 + 16 + 16 + 16 + 48 = 113 bytes
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Copy, Debug, PartialEq, Default, InitSpace)]
 pub struct Tick {
-    pub initialized: bool,
-    pub liquidity_net: i128,
-    pub liquidity_gross: u128,
-    pub fee_growth_outside_a: u128,
-    pub fee_growth_outside_b: u128,
-    pub reward_growths_outside: [u128; 3],
+    pub initialized: bool,                 // 1
+    pub liquidity_net: i128,               // 16
+    pub liquidity_gross: u128,             // 16
+    pub fee_growth_outside_a: u128,        // 16
+    pub fee_growth_outside_b: u128,        // 16
+    pub reward_growths_outside: [u128; 3], // 48
 }
 
 impl Tick {
-    pub const LEN: usize = Self::INIT_SPACE;
+    pub const LEN: usize = Tick::INIT_SPACE;
 }
 
 /// Check if a tick is valid for the given tick spacing.
