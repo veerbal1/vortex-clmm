@@ -20,6 +20,14 @@ pub fn sub_liquidity(current_liquidity: u128, new_liquidity: u128) -> Result<u12
         .ok_or(VortexError::LiquidityUnderflow)
 }
 
+pub fn add_liquidity_delta(liquidity: u128, delta: i128) -> Result<u128, VortexError> {
+    if delta > 0 {
+        add_liquidity(liquidity, delta as u128)
+    } else {
+        sub_liquidity(liquidity, delta.unsigned_abs())
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -42,5 +50,20 @@ mod tests {
     #[test]
     fn test_sub_liquidity_underflow() {
         assert!(sub_liquidity(1, 2).is_err());
+    }
+
+    #[test]
+    fn test_add_liquidity_delta_positive() {
+        assert_eq!(add_liquidity_delta(100, 50).unwrap(), 150);
+    }
+
+    #[test]
+    fn test_add_liquidity_delta_negative() {
+        assert_eq!(add_liquidity_delta(100, -50).unwrap(), 50);
+    }
+
+    #[test]
+    fn test_add_liquidity_delta_zero() {
+        assert_eq!(add_liquidity_delta(100, 0).unwrap(), 100);
     }
 }
