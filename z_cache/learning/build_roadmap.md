@@ -362,13 +362,13 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 > Business logic. Managers orchestrate operations across state.
 
 ### Ring 40: Tick Manager - Initialization
-> **Dependencies** (add before implementing):
-> - Add `add_liquidity_delta(liquidity: u128, delta: i128) -> Result<u128>` to `math/liquidity_math.rs`
-> - Add `TickUpdate` struct to `state/tick.rs` (immutable update pattern)
-> - Add `Tick::update(&mut self, update: &TickUpdate)` method
-> - Add `WhirlpoolRewardInfo::to_reward_growths()` helper to `state/whirlpool.rs`
+> **Dependencies** ✅ COMPLETE:
+> - [x] `add_liquidity_delta(liquidity: u128, delta: i128) -> Result<u128>` in `math/liquidity_math.rs`
+> - [x] `TickUpdate` struct in `state/tick.rs`
+> - [x] `Tick::update(&mut self, update: &TickUpdate)` method
+> - [x] `WhirlpoolRewardInfo::to_reward_growths()` in `state/whirlpool.rs`
 
-- [ ] Add dependencies above
+- [x] Add dependencies above — Completed Jan 10, 2026
 - [ ] Create `manager/tick_manager.rs`
 - [ ] Implement `next_tick_modify_liquidity_update()` (Orca pattern: combines init/update/deinit)
   - Initialize tick: when `liquidity_gross == 0` and adding liquidity
