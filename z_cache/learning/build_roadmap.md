@@ -279,25 +279,25 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Calculate final `Whirlpool::LEN`
 - **Deliverable**: Complete Whirlpool state ✅ — Completed Jan 8, 2026
 
-### Ring 28: Position State - Core
-- [ ] Create `state/position.rs`
-- [ ] Define `Position` struct
-- [ ] Fields: `whirlpool`, `position_mint`, `liquidity` (u128)
-- [ ] Fields: `tick_lower_index` (i32), `tick_upper_index` (i32)
-- [ ] Implement `DISCRIMINATOR`, `LEN`
-- **Deliverable**: Position identity fields
+### Ring 28: Position State - Core ✅
+- [x] Create `state/position.rs`
+- [x] Define `Position` struct
+- [x] Fields: `whirlpool`, `position_mint`, `liquidity` (u128)
+- [x] Fields: `tick_lower_index` (i32), `tick_upper_index` (i32)
+- [x] Implement `DISCRIMINATOR`, `LEN`
+- **Deliverable**: Position identity fields ✅ — Completed Jan 10, 2026
 
-### Ring 29: Position State - Fees
-- [ ] Add to `Position`: `fee_growth_checkpoint_a` (u128), `fee_growth_checkpoint_b` (u128)
-- [ ] Add: `fee_owed_a` (u64), `fee_owed_b` (u64)
-- **Deliverable**: Position fee tracking
+### Ring 29: Position State - Fees ✅
+- [x] Add to `Position`: `fee_growth_checkpoint_a` (u128), `fee_growth_checkpoint_b` (u128)
+- [x] Add: `fee_owed_a` (u64), `fee_owed_b` (u64)
+- **Deliverable**: Position fee tracking ✅ — Completed Jan 10, 2026
 
-### Ring 30: Position State - Rewards
-- [ ] Define `PositionRewardInfo` struct
-- [ ] Fields: `growth_inside_checkpoint` (u128), `amount_owed` (u64)
-- [ ] Add to `Position`: `reward_infos: [PositionRewardInfo; 3]`
-- [ ] Calculate final `Position::LEN`
-- **Deliverable**: Complete Position state
+### Ring 30: Position State - Rewards ✅
+- [x] Define `PositionRewardInfo` struct
+- [x] Fields: `growth_inside_checkpoint` (u128), `amount_owed` (u64)
+- [x] Add to `Position`: `reward_infos: [PositionRewardInfo; 3]`
+- [x] Calculate final `Position::LEN`
+- **Deliverable**: Complete Position state ✅ — Completed Jan 10, 2026
 
 ### Ring 31: Position Bundle State
 - [ ] Create `state/position_bundle.rs`
