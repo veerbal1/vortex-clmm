@@ -150,6 +150,45 @@ pub fn next_fee_growths_inside(
     )
 }
 
+pub fn next_reward_growths_inside(
+    tick_current_index: i32,
+    tick_lower: &Tick,
+    tick_lower_index: i32,
+    tick_upper: &Tick,
+    tick_upper_index: i32,
+    reward_infos: &[WhirlpoolRewardInfo; NUM_REWARDS],
+) -> [u128; NUM_REWARDS] {
+    let mut reward_growths_inside = [0u128; NUM_REWARDS];
+    for i in 0..NUM_REWARDS {
+        // STEP 1: Calculate reward growth BELOW
+        let reward_growth_below = if tick_current_index < tick_lower_index {
+            // Flip
+            reward_infos[i]
+                .growth_global_x64
+                .wrapping_sub(tick_lower.reward_growths_outside[i])
+        } else {
+            // Use directly
+            tick_lower.reward_growths_outside[i]
+        };
+        // STEP 2: Calculate reward growth ABOVE
+        let reward_growth_above = if tick_current_index < tick_upper_index {
+            // Use directly
+            tick_upper.reward_growths_outside[i]
+        } else {
+            // Flip
+            reward_infos[i]
+                .growth_global_x64
+                .wrapping_sub(tick_upper.reward_growths_outside[i])
+        };
+        // STEP 3: Calculate INSIDE
+        reward_growths_inside[i] = reward_infos[i]
+            .growth_global_x64
+            .wrapping_sub(reward_growth_below)
+            .wrapping_sub(reward_growth_above);
+    }
+    reward_growths_inside
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -383,5 +422,35 @@ mod tests {
         // For B: 500 - 100 - 150 = 250
         assert_eq!(inside_a, 500);
         assert_eq!(inside_b, 250);
+    }
+
+    // Test: Reward growth inside calculation - price in range
+    #[test]
+    fn test_reward_growth_inside_price_in_range() {
+        let tick_lower = Tick {
+            initialized: true,
+            reward_growths_outside: [100, 200, 300],
+            ..Default::default()
+        };
+        let tick_upper = Tick {
+            initialized: true,
+            reward_growths_outside: [150, 250, 350],
+            ..Default::default()
+        };
+        let reward_infos = create_reward_infos(1000);
+        // Price is inside the range: tick_lower(100) < current(150) < tick_upper(200)
+        let inside = next_reward_growths_inside(
+            150, // tick_current_index (inside range)
+            &tick_lower,
+            100, // tick_lower_index
+            &tick_upper,
+            200, // tick_upper_index
+            &reward_infos,
+        );
+        // inside = global - below - above
+        // Reward 0: 1000 - 100 (below, use directly) - 150 (above, use directly) = 750
+        // Reward 1: 1000 - 200 - 250 = 550
+        // Reward 2: 1000 - 300 - 350 = 350
+        assert_eq!(inside, [750, 550, 350]);
     }
 }
