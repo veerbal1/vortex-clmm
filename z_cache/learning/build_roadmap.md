@@ -401,33 +401,28 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Unit tests (1 test)
 - **Deliverable**: Reward growth calculation ✅
 
-### Ring 45: Position Manager - Fee Calculation
-- [ ] Create `manager/position_manager.rs`
-- [ ] Implement `calculate_fee_owed(position: &Position, fee_growth_inside_a: u128, fee_growth_inside_b: u128) -> (u64, u64)`
-- [ ] Formula: `(growth_inside - checkpoint) * liquidity`
-- [ ] Handle accumulator wrapping
-- [ ] Unit tests
-- **Deliverable**: Position fee calculation
+### Ring 45: Position Manager - Fee Calculation ✅
+- [x] Create `manager/position_manager.rs`
+- [x] Implement `next_position_modify_liquidity_update()` — combines fee calc, fee update, reward calc, reward update
+- [x] Formula: `(growth_inside - checkpoint) * liquidity` using `wrapping_sub`
+- [x] Handle accumulator wrapping with `wrapping_add`
+- [x] Unit tests (5 tests)
+- **Deliverable**: Position fee calculation ✅ — Completed Jan 15, 2026
 
-### Ring 46: Position Manager - Fee Update
-- [ ] Implement `update_position_fees(position: &mut Position, fee_growth_inside_a: u128, fee_growth_inside_b: u128)`
-- [ ] Calculate owed amounts
-- [ ] Add to `fee_owed_a/b`
-- [ ] Update checkpoints
-- [ ] Unit tests
-- **Deliverable**: Position fee updates
+### Ring 46: Position Manager - Fee Update ✅
+- [x] Covered by `next_position_modify_liquidity_update()` in Ring 45
+- [x] Checkpoints updated, fees accumulated
+- **Deliverable**: Position fee updates ✅ — Completed Jan 15, 2026
 
-### Ring 47: Position Manager - Reward Calculation
-- [ ] Implement `calculate_reward_owed(position: &Position, reward_index: usize, reward_growth_inside: u128) -> u64`
-- [ ] Same pattern as fees
-- [ ] Unit tests
-- **Deliverable**: Position reward calculation
+### Ring 47: Position Manager - Reward Calculation ✅
+- [x] Covered by `next_position_modify_liquidity_update()` in Ring 45
+- [x] Same pattern as fees, loops through NUM_REWARDS
+- **Deliverable**: Position reward calculation ✅ — Completed Jan 15, 2026
 
-### Ring 48: Position Manager - Reward Update
-- [ ] Implement `update_position_rewards(position: &mut Position, reward_growths_inside: &[u128; 3])`
-- [ ] Update all three reward checkpoints and owed amounts
-- [ ] Unit tests
-- **Deliverable**: Position reward updates
+### Ring 48: Position Manager - Reward Update ✅
+- [x] Covered by `next_position_modify_liquidity_update()` in Ring 45
+- [x] All three reward checkpoints and owed amounts updated
+- **Deliverable**: Position reward updates ✅ — Completed Jan 15, 2026
 
 ### Ring 49: Liquidity Manager - Add
 - [ ] Create `manager/liquidity_manager.rs`
