@@ -70,6 +70,86 @@ pub fn next_tick_modify_liquidity_update(
     })
 }
 
+pub fn next_tick_cross_update(
+    tick: &Tick,
+    fee_growth_global_a: u128,
+    fee_growth_global_b: u128,
+    reward_infos: &[WhirlpoolRewardInfo; NUM_REWARDS],
+) -> TickUpdate {
+    let mut update = TickUpdate {
+        initialized: tick.initialized,
+        liquidity_net: tick.liquidity_net,
+        liquidity_gross: tick.liquidity_gross,
+        fee_growth_outside_a: tick.fee_growth_outside_a,
+        fee_growth_outside_b: tick.fee_growth_outside_b,
+        reward_growths_outside: tick.reward_growths_outside,
+    };
+
+    update.fee_growth_outside_a = fee_growth_global_a.wrapping_sub(tick.fee_growth_outside_a);
+    update.fee_growth_outside_b = fee_growth_global_b.wrapping_sub(tick.fee_growth_outside_b);
+
+    for i in 0..NUM_REWARDS {
+        update.reward_growths_outside[i] = reward_infos[i]
+            .growth_global_x64
+            .wrapping_sub(tick.reward_growths_outside[i]);
+    }
+
+    update
+}
+
+pub fn next_fee_growths_inside(
+    tick_current_index: i32,
+    tick_lower: &Tick,
+    tick_lower_index: i32,
+    tick_upper: &Tick,
+    tick_upper_index: i32,
+    fee_growth_global_a: u128,
+    fee_growth_global_b: u128,
+) -> (u128, u128) {
+    // ============================================
+    // STEP 1: Calculate fee growth BELOW the range
+    // ============================================
+    let (fee_growth_below_a, fee_growth_below_b) = if tick_current_index < tick_lower_index {
+        // Price is BELOW lower tick → flip
+        (
+            fee_growth_global_a.wrapping_sub(tick_lower.fee_growth_outside_a),
+            fee_growth_global_b.wrapping_sub(tick_lower.fee_growth_outside_b),
+        )
+    } else {
+        (
+            tick_lower.fee_growth_outside_a,
+            tick_lower.fee_growth_outside_b,
+        )
+    };
+
+    let (fee_growth_above_a, fee_growth_above_b) = if tick_current_index < tick_upper_index {
+        // Price is BELOW upper tick → use directly
+        (
+            tick_upper.fee_growth_outside_a,
+            tick_upper.fee_growth_outside_b,
+        )
+    } else {
+        // Price is AT or ABOVE upper tick → flip
+        (
+            fee_growth_global_a.wrapping_sub(tick_upper.fee_growth_outside_a),
+            fee_growth_global_b.wrapping_sub(tick_upper.fee_growth_outside_b),
+        )
+    };
+
+    // ============================================
+    // STEP 3: Calculate fee growth INSIDE the range
+    // inside = global - below - above
+    // ============================================
+    (
+        fee_growth_global_a
+            .wrapping_sub(fee_growth_below_a)
+            .wrapping_sub(fee_growth_above_a),
+        fee_growth_global_b
+            .wrapping_sub(fee_growth_below_b)
+            .wrapping_sub(fee_growth_above_b),
+    )
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -242,5 +322,66 @@ mod tests {
 
         assert_eq!(update.liquidity_net, 13000); // 10000 + 3000
         assert_eq!(update.liquidity_gross, 13000);
+    }
+
+    // Test: Tick crossing flips fee growth outside values
+    #[test]
+    fn test_tick_cross_flips_fee_growth() {
+        let tick = Tick {
+            initialized: true,
+            liquidity_net: 5000,
+            liquidity_gross: 5000,
+            fee_growth_outside_a: 300,
+            fee_growth_outside_b: 400,
+            reward_growths_outside: [100, 200, 300],
+        };
+        let reward_infos = create_reward_infos(1000);
+        let update = next_tick_cross_update(
+            &tick,
+            1000, // fee_growth_global_a
+            1000, // fee_growth_global_b
+            &reward_infos,
+        );
+        // Flip formula: new_outside = global - old_outside
+        assert_eq!(update.fee_growth_outside_a, 700); // 1000 - 300
+        assert_eq!(update.fee_growth_outside_b, 600); // 1000 - 400
+        assert_eq!(update.reward_growths_outside, [900, 800, 700]); // 1000 - [100, 200, 300]
+
+        // These should remain unchanged
+        assert_eq!(update.initialized, true);
+        assert_eq!(update.liquidity_net, 5000);
+        assert_eq!(update.liquidity_gross, 5000);
+    }
+
+    // Test: Fee growth inside calculation - price in range
+    #[test]
+    fn test_fee_growth_inside_price_in_range() {
+        let tick_lower = Tick {
+            initialized: true,
+            fee_growth_outside_a: 200,
+            fee_growth_outside_b: 100,
+            ..Default::default()
+        };
+        let tick_upper = Tick {
+            initialized: true,
+            fee_growth_outside_a: 300,
+            fee_growth_outside_b: 150,
+            ..Default::default()
+        };
+        // Price is inside the range: tick_lower(100) < current(150) < tick_upper(200)
+        let (inside_a, inside_b) = next_fee_growths_inside(
+            150, // tick_current_index (inside range)
+            &tick_lower,
+            100, // tick_lower_index
+            &tick_upper,
+            200,  // tick_upper_index
+            1000, // fee_growth_global_a
+            500,  // fee_growth_global_b
+        );
+        // inside = global - below - above
+        // For A: 1000 - 200 (below, use directly) - 300 (above, use directly) = 500
+        // For B: 500 - 100 - 150 = 250
+        assert_eq!(inside_a, 500);
+        assert_eq!(inside_b, 250);
     }
 }
