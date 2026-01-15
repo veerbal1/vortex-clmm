@@ -37,4 +37,10 @@ pub enum VortexError {
 
     #[msg("Tick array index out of bounds")]
     TickArrayIndexOutOfBounds,
+
+    #[msg("Liquidity net overflow")]
+    LiquidityNetOverflow,
+
+    #[msg("Liquidity net underflow")]
+    LiquidityNetUnderflow,
 }
