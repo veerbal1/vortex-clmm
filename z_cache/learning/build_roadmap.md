@@ -395,11 +395,11 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] Unit tests (1 test)
 - **Deliverable**: Fee growth calculation ✅
 
-### Ring 44: Tick Manager - Reward Growth
-- [ ] Implement `get_reward_growth_inside(tick_lower: &Tick, tick_upper: &Tick, tick_current: i32, reward_growths_global: &[u128; 3]) -> [u128; 3]`
-- [ ] Same logic as fees, for each reward
-- [ ] Unit tests
-- **Deliverable**: Reward growth calculation
+### Ring 44: Tick Manager - Reward Growth ✅
+- [x] Implement `next_reward_growths_inside()` — Completed Jan 15, 2026
+- [x] Same logic as fees, for each reward in loop
+- [x] Unit tests (1 test)
+- **Deliverable**: Reward growth calculation ✅
 
 ### Ring 45: Position Manager - Fee Calculation
 - [ ] Create `manager/position_manager.rs`
