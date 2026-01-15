@@ -3,7 +3,7 @@
 ## Current Position
 - **Mode**: 🔨 BUILD MODE
 - **Learning Status**: COMPLETE (All 23 rings, 111 concepts)
-- **Build Status**: Ring 32 of 200 — COMPLETE
+- **Build Status**: Ring 43 of 200 — IN PROGRESS (Phase 3: Manager Layer)
 
 ## Build Reference
 - **Roadmap**: `/z_cache/learning/build_roadmap.md`
@@ -346,9 +346,14 @@ From "what is trading" to adaptive fees, oracles, and bit manipulation.
 - [x] Ring 32: Oracle (with Adaptive Fees) ✅ — Completed Jan 10, 2026
 - [ ] Rings 33-40: Extended Accounts (ConfigExtension, TokenBadge, LockConfig, DynamicTickArray)
 
-## Phase 3: Manager Layer (Rings 41-55)
-- [ ] Rings 41-45: Tick & Position Managers
-- [ ] Rings 46-50: Liquidity Manager
+## Phase 3: Manager Layer (Rings 40-55)
+- [x] Ring 40: Tick Manager - `next_tick_modify_liquidity_update()` ✅ — Completed Jan 15, 2026
+- [~] Ring 41: Tick Manager - Update — SKIPPED (covered by Ring 40)
+- [x] Ring 42: Tick Manager - `next_tick_cross_update()` ✅ — Completed Jan 15, 2026
+- [x] Ring 43: Tick Manager - `next_fee_growths_inside()` ✅ — Completed Jan 15, 2026
+- [ ] Ring 44: Tick Manager - `next_reward_growths_inside()`
+- [ ] Rings 45-48: Position Manager
+- [ ] Rings 49-50: Liquidity Manager
 - [ ] Rings 51-55: Swap Manager
 
 ## Phase 4: Core Instructions (Rings 56-80)

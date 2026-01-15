@@ -361,7 +361,7 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 
 > Business logic. Managers orchestrate operations across state.
 
-### Ring 40: Tick Manager - Initialization
+### Ring 40: Tick Manager - Initialization ✅
 > **Dependencies** ✅ COMPLETE:
 > - [x] `add_liquidity_delta(liquidity: u128, delta: i128) -> Result<u128>` in `math/liquidity_math.rs`
 > - [x] `TickUpdate` struct in `state/tick.rs`
@@ -369,36 +369,31 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 > - [x] `WhirlpoolRewardInfo::to_reward_growths()` in `state/whirlpool.rs`
 
 - [x] Add dependencies above — Completed Jan 10, 2026
-- [ ] Create `manager/tick_manager.rs`
-- [ ] Implement `next_tick_modify_liquidity_update()` (Orca pattern: combines init/update/deinit)
+- [x] Create `manager/tick_manager.rs` — Completed Jan 15, 2026
+- [x] Implement `next_tick_modify_liquidity_update()` (Orca pattern: combines init/update/deinit)
   - Initialize tick: when `liquidity_gross == 0` and adding liquidity
   - Update tick: when already initialized
   - Deinitialize tick: when `liquidity_gross` becomes 0 (return `TickUpdate::default()`)
-- [ ] Unit tests
-- **Deliverable**: Tick lifecycle management (Orca-aligned)
+- [x] Unit tests (6 tests)
+- **Deliverable**: Tick lifecycle management (Orca-aligned) ✅ — Completed Jan 15, 2026
 
-### Ring 41: Tick Manager - Update
-- [ ] Implement `update_tick(tick: &mut Tick, liquidity_delta: i128, is_upper: bool) -> Result<bool>`
-- [ ] Update `liquidity_net` (add if lower, subtract if upper)
-- [ ] Update `liquidity_gross`
-- [ ] Return whether tick should be initialized/deinitialized
-- [ ] Unit tests
-- **Deliverable**: Tick liquidity updates
+### Ring 41: Tick Manager - Update — SKIPPED
+- [~] Covered by Ring 40's `next_tick_modify_liquidity_update()` function
+- **Deliverable**: Tick liquidity updates (merged into Ring 40)
 
-### Ring 42: Tick Manager - Crossing
-- [ ] Implement `cross_tick(tick: &mut Tick, fee_growth_global_a: u128, fee_growth_global_b: u128, reward_growths_global: &[u128; 3]) -> i128`
-- [ ] Flip `fee_growth_outside` values
-- [ ] Flip `reward_growths_outside` values
-- [ ] Return `liquidity_net` for pool update
-- [ ] Unit tests
-- **Deliverable**: Tick crossing logic
+### Ring 42: Tick Manager - Crossing ✅
+- [x] Implement `next_tick_cross_update()` — Completed Jan 15, 2026
+- [x] Flip `fee_growth_outside` values using `wrapping_sub`
+- [x] Flip `reward_growths_outside` values for all 3 rewards
+- [x] Unit tests (1 test)
+- **Deliverable**: Tick crossing logic ✅
 
-### Ring 43: Tick Manager - Fee Growth
-- [ ] Implement `get_fee_growth_inside(tick_lower: &Tick, tick_upper: &Tick, tick_current: i32, fee_growth_global_a: u128, fee_growth_global_b: u128) -> (u128, u128)`
-- [ ] Handle three cases: current below, inside, above range
-- [ ] Wrapping subtraction for accumulators
-- [ ] Unit tests with various scenarios
-- **Deliverable**: Fee growth calculation
+### Ring 43: Tick Manager - Fee Growth ✅
+- [x] Implement `next_fee_growths_inside()` — Completed Jan 15, 2026
+- [x] Handle three cases: current below, inside, above range
+- [x] Wrapping subtraction for accumulators
+- [x] Unit tests (1 test)
+- **Deliverable**: Fee growth calculation ✅
 
 ### Ring 44: Tick Manager - Reward Growth
 - [ ] Implement `get_reward_growth_inside(tick_lower: &Tick, tick_upper: &Tick, tick_current: i32, reward_growths_global: &[u128; 3]) -> [u128; 3]`
