@@ -424,22 +424,22 @@ Each ring = ONE brush stroke. Thin layers. No jumping.
 - [x] All three reward checkpoints and owed amounts updated
 - **Deliverable**: Position reward updates ✅ — Completed Jan 15, 2026
 
-### Ring 49: Liquidity Manager - Add
-- [ ] Create `manager/liquidity_manager.rs`
-- [ ] Implement `add_liquidity(whirlpool: &mut Whirlpool, position: &mut Position, tick_lower: &mut Tick, tick_upper: &mut Tick, liquidity_delta: u128) -> Result<(u64, u64)>`
-- [ ] Update position liquidity
-- [ ] Update tick liquidity_net/gross
-- [ ] Update pool liquidity if in range
-- [ ] Return required token amounts
-- [ ] Unit tests
-- **Deliverable**: Add liquidity orchestration
+### Ring 49: Liquidity Manager - Add ✅
+- [x] Create `manager/liquidity_manager.rs`
+- [x] Implement `ModifyLiquidityUpdate` struct for bundled state updates
+- [x] Implement `next_whirlpool_liquidity()` - updates pool liquidity when position in range
+- [x] Implement `calculate_modify_liquidity()` - orchestrates tick + position updates
+- [x] Implement `calculate_liquidity_token_deltas()` - calculates required token A/B amounts
+- [x] Implement `sync_modify_liquidity_values()` - applies updates to actual state
+- [x] Unit tests (5 tests)
+- **Deliverable**: Add liquidity orchestration ✅ — Completed Jan 16, 2026
 
-### Ring 50: Liquidity Manager - Remove
-- [ ] Implement `remove_liquidity(whirlpool: &mut Whirlpool, position: &mut Position, tick_lower: &mut Tick, tick_upper: &mut Tick, liquidity_delta: u128) -> Result<(u64, u64)>`
-- [ ] Reverse of add
-- [ ] Return withdrawn token amounts
-- [ ] Unit tests
-- **Deliverable**: Remove liquidity orchestration
+### Ring 50: Liquidity Manager - Remove ✅
+- [x] Handled by same functions as Ring 49 via signed `liquidity_delta` parameter
+- [x] `liquidity_delta > 0` = add (rounds up token amounts)
+- [x] `liquidity_delta < 0` = remove (rounds down token amounts)
+- [x] Returns withdrawn token amounts when removing
+- **Deliverable**: Remove liquidity orchestration ✅ — Completed Jan 16, 2026
 
 ### Ring 51: Swap Manager - Core Loop Setup
 - [ ] Create `manager/swap_manager.rs`
