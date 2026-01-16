@@ -6,3 +6,6 @@ pub use position_manager::*;
 
 pub mod liquidity_manager;
 pub use liquidity_manager::*;
+
+pub mod swap_manager;
+pub use swap_manager::*;
