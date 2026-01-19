@@ -9,3 +9,6 @@ pub use token_math::*;
 
 pub mod swap_math;
 pub use swap_math::*;
+
+pub mod adaptive_fee;
+pub use adaptive_fee::*;
