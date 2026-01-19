@@ -2,6 +2,9 @@ pub const VOLATILITY_ACCUMULATOR_SCALE_FACTOR: u32 = 45000;
 pub const REDUCTION_FACTOR_DENOMINATOR: u32 = 10_000;
 pub const MAX_REFERENCE_AGE: u64 = 86_400; // 24 hours
 
+pub const ADAPTIVE_FEE_CONTROL_FACTOR_DENOMINATOR: u128 = 100_000_000_000; // 10^11
+pub const FEE_RATE_HARD_LIMIT: u32 = 2_000_000; // 200% max fee (in 1/1,000,000 units)
+
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub struct ReferenceUpdate {
     pub tick_group_index_reference: i32,
@@ -84,6 +87,46 @@ pub fn update_reference(
             last_reference_update_timestamp: current_timestamp,
         };
     }
+}
+
+/// Formula: (control_factor * (volatility * group_size)^2) / (DENOMINATOR * SCALE^2)
+pub fn compute_adaptive_fee_rate(
+    volatility_accumulator: u32,
+    tick_group_size: u16,
+    adaptive_fee_control_factor: u32,
+) -> u32 {
+    let crossed = (volatility_accumulator as u128) * (tick_group_size as u128);
+    let squared = crossed * crossed;
+
+    let scale_squared = (VOLATILITY_ACCUMULATOR_SCALE_FACTOR as u128)
+        * (VOLATILITY_ACCUMULATOR_SCALE_FACTOR as u128);
+
+    let numerator = (adaptive_fee_control_factor as u128) * squared;
+    let denominator = ADAPTIVE_FEE_CONTROL_FACTOR_DENOMINATOR * scale_squared;
+
+    if numerator == 0 {
+        return 0;
+    };
+
+    let fee_rate = (numerator + denominator - 1) / denominator;
+    std::cmp::min(fee_rate, FEE_RATE_HARD_LIMIT as u128) as u32
+}
+
+pub fn get_total_fee_rate(
+    static_fee_rate: u16,
+    volatility_accumulator: u32,
+    tick_group_size: u16,
+    adaptive_fee_control_factor: u32,
+) -> u32 {
+    let adaptive_fee = compute_adaptive_fee_rate(
+        volatility_accumulator,
+        tick_group_size,
+        adaptive_fee_control_factor,
+    );
+
+    let total = (static_fee_rate as u32) + adaptive_fee;
+
+    std::cmp::min(total, FEE_RATE_HARD_LIMIT)
 }
 
 #[cfg(test)]
@@ -203,5 +246,32 @@ mod tests {
         assert_eq!(res.tick_group_index_reference, current_tick as i32);
         assert_eq!(res.volatility_reference, 0 as u32);
         assert_eq!(res.last_reference_update_timestamp, current_ts);
+    }
+
+    #[test]
+    fn test_fee_is_quadratic() {
+        // Constants used in production (roughly)
+        let group_size = 64;
+        let control = 620_000_000; // Standard sensitivity
+
+        // Scenario A: Low Volatility (Accumulator = 45,000 -> 1 jump)
+        let vol_low = 45_000;
+        let fee_low = compute_adaptive_fee_rate(vol_low, group_size, control);
+
+        // Scenario B: High Volatility (Accumulator = 450,000 -> 10 jumps)
+        // Volatility is 10x higher.
+        let vol_high = 450_000;
+        let fee_high = compute_adaptive_fee_rate(vol_high, group_size, control);
+
+        println!("Fee Low: {}, Fee High: {}", fee_low, fee_high);
+
+        // CHECK: If Input increased 10x, Output should increase 100x (Quadratic)
+        // fee_high / fee_low should be roughly 100.
+        let ratio = fee_high / fee_low;
+        assert!(
+            ratio >= 95 && ratio <= 105,
+            "Fee did not scale quadratically! Got ratio: {}",
+            ratio
+        );
     }
 }
